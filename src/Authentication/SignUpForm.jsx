@@ -69,7 +69,7 @@ function SignUpForm() {
       await promise.createEmailSession(userDetails.email, userDetails.password);
 
       // Verification email sent
-      let verify = await promise.createVerification("https://taskbuddy-mu.vercel.app/dashboard");
+      let verify = await promise.createVerification("https://taskbuddy-mu.vercel.app");
     } catch (error) {}
   };
 
