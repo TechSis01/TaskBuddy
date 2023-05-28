@@ -116,7 +116,7 @@ function SignUpForm() {
         </div>
         <div className="my-8 w-7/12" onClick={signup}>
           <Link
-            to="dashboard"
+            to="/dashboard"
             className="pr-11 py-2  bg-purple-3 text-white w-full rounded-md flex justify-center items-center hover:bg-purple-4"
           >
             Create an Account
@@ -126,7 +126,7 @@ function SignUpForm() {
           Already have an account?{" "}
           <span>
             <Link
-              to="login"
+              to="/login"
               className="text-purple-4 font-semibold hover:text-purple-6"
             >
               Sign In

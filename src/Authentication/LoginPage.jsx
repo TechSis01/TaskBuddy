@@ -86,7 +86,7 @@ const LoginPage = () => {
         </div>
         <div className="mt-8 flex items-center text-purple-4 font-semibold hover:text-purple-5">
           <IoIosArrowBack />
-          <Link to="/">Create an Account</Link>
+          <Link to="/dashboard">Create an Account</Link>
         </div>
       </div>
       <Carousel carouselImages={signUpImages} />

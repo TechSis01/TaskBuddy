@@ -6,6 +6,7 @@ function DashboardHome() {
     <section>
       {loader && <div>loading, please wait</div>} 
       {!loader && <section>Welcome {currentUser}</section>}
+      <h1>welcome</h1>
     </section>
   );
 }
