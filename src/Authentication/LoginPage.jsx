@@ -78,7 +78,7 @@ const LoginPage = () => {
 
         <div className="mt-8 w-7/12" onClick={showDeets}>
           <Link
-            to="/dashboard"
+            to="dashboard"
             className="pr-11 py-2  bg-purple-3 text-white w-full rounded-md flex justify-center items-center hover:bg-purple-4"
           >
             Login

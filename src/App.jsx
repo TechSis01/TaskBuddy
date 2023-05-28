@@ -17,7 +17,7 @@ function App() {
       <Route>
           <Route index element={<SignupPage />}/>
           <Route path="login" element={<LoginPage />}/>
-          <Route path="/dashboard" element={<DashboardHome />}/>
+          <Route path="dashboard" element={<DashboardHome />}/>
       </Route>
     )
   )
@@ -29,8 +29,10 @@ function App() {
     email: "",
     password: "",
   });
-  // Preload State
+  // Preloader State
   const [loader, setLoader] = useState(false);
+
+
   return (
     <UserContext.Provider value={{ userDetails, setUserDetails,currentUser,setCurrentUser,loader,setLoader}}>
      <RouterProvider router={router} />

@@ -69,7 +69,7 @@ function SignUpForm() {
       await promise.createEmailSession(userDetails.email, userDetails.password);
 
       // Verification email sent
-      let verify = await promise.createVerification("https://taskbuddy-mu.vercel.app//dashboard");
+      let verify = await promise.createVerification("https://taskbuddy-mu.vercel.app/dashboard");
     } catch (error) {}
   };
 
@@ -116,7 +116,7 @@ function SignUpForm() {
         </div>
         <div className="my-8 w-7/12" onClick={signup}>
           <Link
-            to="/dashboard"
+            to="dashboard"
             className="pr-11 py-2  bg-purple-3 text-white w-full rounded-md flex justify-center items-center hover:bg-purple-4"
           >
             Create an Account
