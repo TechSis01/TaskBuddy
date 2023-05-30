@@ -1,6 +1,6 @@
 import FormField from "./FormField";
-import Button from "../Button";
-import Logo from "../Images/brandName.png";
+import Logo from "../Logo";
+import logo from "../Images/brandName.png"
 import { UserContext } from "../App";
 import { useContext, useState } from "react";
 import { promise } from "../services/appwriteConfig";
@@ -55,6 +55,9 @@ function SignUpForm() {
       // for the user, then the verification to email is fired off
       verifyUser();
       setCurrentUser(userDetails.name);
+      console.log(
+        "verification email has been sent to your email check to verify"
+      );
       if (userDetails.name.length > 0) {
         setLoader(false);
       }
@@ -69,7 +72,9 @@ function SignUpForm() {
       await promise.createEmailSession(userDetails.email, userDetails.password);
 
       // Verification email sent
-      let verify = await promise.createVerification("https://taskbuddy-mu.vercel.app/dashboard");
+      let verify = await promise.createVerification(
+        "http://localhost:5173/login"
+      );
     } catch (error) {}
   };
 
@@ -80,7 +85,7 @@ function SignUpForm() {
 
   return (
     <section className=" w-3/6 mt-12 ">
-      <img src={Logo} alt="TaskBuddy" className="w-60 ml-4"></img>
+    <Logo style="w-60 ml-4" image={logo} altText="brandlogo"/>
       <div className="ml-14">
         <TopHeader
           style="text-gray-400"
@@ -109,10 +114,6 @@ function SignUpForm() {
           <div onClick={showPassword} className="w-4">
             {passwordVisible ? <VscEye /> : <VscEyeClosed />}
           </div>
-        </div>
-        <div className="flex items-center justify-between w-7/12">
-          <FormField text="checkbox" message="Remember me" />
-          <p>Forgot Password</p>
         </div>
         <div className="my-8 w-7/12" onClick={signup}>
           <Link

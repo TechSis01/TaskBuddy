@@ -8,6 +8,7 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
 import { promise } from "../services/appwriteConfig";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
+
 const LoginPage = () => {
   //  State to change password visibility
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -50,9 +51,25 @@ const LoginPage = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("userId");
+    const secret = urlParams.get("secret");
+
+    promise
+      .updateVerification(userId, secret)
+      .then(() => {
+        console.log("User is verified");
+        history.push("/login");
+      })
+      .catch((e) => {
+        console.log("verification failed");
+      });
+  }, []);
+
   return (
     <section className="flex">
-      <div className=" w-3/6 mt-44 ml-14 ">
+      <div className=" w-3/6 mt-24 ml-14 ">
         <TopHeader
           text="Welcome back to TaskBuddy"
           style="text-3xl font-semibold my-3"
@@ -75,10 +92,15 @@ const LoginPage = () => {
             {passwordVisible ? <VscEye /> : <VscEyeClosed />}
           </div>
         </div>
-
+        <Link
+          to="/forgotPassword"
+          className="text-purple-4 font-semibold hover:text-purple-6"
+        >
+          Forgot Password
+        </Link>
         <div className="mt-8 w-7/12" onClick={showDeets}>
           <Link
-            to="dashboard"
+            to="/dashboard"
             className="pr-11 py-2  bg-purple-3 text-white w-full rounded-md flex justify-center items-center hover:bg-purple-4"
           >
             Login
@@ -86,7 +108,7 @@ const LoginPage = () => {
         </div>
         <div className="mt-8 flex items-center text-purple-4 font-semibold hover:text-purple-5">
           <IoIosArrowBack />
-          <Link to="/dashboard">Create an Account</Link>
+          <Link to="/">Create an Account</Link>
         </div>
       </div>
       <Carousel carouselImages={signUpImages} />

@@ -2,7 +2,8 @@
 import SignupPage from "./Authentication/SignupPage";
 import LoginPage from "./Authentication/LoginPage";
 import DashboardHome from "./DashBoard/DashboardHome";
-
+import ForgotPassword from "./Authentication/ForgotPassword";
+import ResetPassword from "./Authentication/ResetPassword";
 // HOOKS IMPORT
 import { useState, createContext } from "react";
 import { Route,createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
@@ -15,9 +16,11 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-          <Route path="/" element={<SignupPage />}/>
+          <Route index element={<SignupPage />}/>
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/dashboard" element={<DashboardHome />}/>
+          <Route path="/forgotPassword" element={<ForgotPassword />}/>
+          <Route path="/resetPassword" element={<ResetPassword />}/>
       </Route>
     )
   )
