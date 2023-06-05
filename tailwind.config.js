@@ -10,7 +10,7 @@ export default {
         'purple-1':'#10002b',
         'purple-2':'#240046',
         'purple-3':'#3c096c',
-        'purple-4':'#5a189a',
+        'purple-4':'#5a197a',
         'purple-5':'#7b2cbf',
         'purple-6':'#9d4edd',
         'purple-7':'#c77dff',

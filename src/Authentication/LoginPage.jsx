@@ -8,18 +8,44 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
 import { promise } from "../services/appwriteConfig";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
-
+import Button from "../Button";
+import Preloader from "../OtherComponents/Preloader";
 const LoginPage = () => {
+  // State to check email validity
+  const [loginEmailValidity, setLoginEmailValidity] = useState(false);
+  // State to check password validity
+  const [loginPasswordValidity, setLoginPasswordValidity] = useState(false);
+
+  // State to handle button Clickability
+  const [buttonClick, setButtonClick] = useState(true);
+
   //  State to change password visibility
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { userDetails, setUserDetails, setCurrentUser, setLoader } =
-    useContext(UserContext);
+  const {
+    userDetails,
+    setUserDetails,
+    setCurrentUser,
+    setLoader,
+    currentUserEmail,
+    setCurrentUserEmail,
+    currentUserPassword,
+    setCurrentUserPassword,
+    isUserInvalid,
+    setIsUserInvalid,
+  } = useContext(UserContext);
 
   const registerEmailAdd = (e) => {
     setUserDetails({
       ...userDetails,
       email: e.target.value,
     });
+
+    let emailRegex = /^[\w.-]+@[a-zA-Z_-]+?\.[a-zA-Z]{2,3}$/;
+    if (userDetails.email.length === 0 || !emailRegex.test(userDetails.email)) {
+      setLoginEmailValidity(true);
+    } else {
+      setLoginEmailValidity(false);
+    }
   };
 
   const registerLoginPassword = (e) => {
@@ -27,9 +53,14 @@ const LoginPage = () => {
       ...userDetails,
       password: e.target.value,
     });
+    if (userDetails.password.length < 8) {
+      setLoginPasswordValidity(true);
+    } else if (userDetails.password.length > 7) {
+      setLoginPasswordValidity(false);
+    }
   };
 
-  const showDeets = async () => {
+  const loginHandler = async () => {
     setLoader(true);
     try {
       let emailSession = await promise.createEmailSession(
@@ -37,14 +68,34 @@ const LoginPage = () => {
         userDetails.password
       );
       let user = await promise.get();
+      setCurrentUserEmail(user.email);
+      setCurrentUserPassword(user.$id);
       setCurrentUser(user.name);
+      setIsUserInvalid(false)
       if (user.name.length > 0) {
         setLoader(false);
       }
     } catch (error) {
-      console.log(error.message);
+        setIsUserInvalid(true);
+        setLoader(false);
     }
   };
+
+  const activateButton = () => {
+    let emailRegex = /^[\w.-]+@[a-zA-Z_-]+?\.[a-zA-Z]{2,3}$/;
+    if (emailRegex.test(userDetails.email) && userDetails.password.length > 7) {
+      setButtonClick(false);
+    } else if (
+      !emailRegex.test(userDetails.email) ||
+      userDetails.password.length < 8
+    ) {
+      setButtonClick(true);
+    }
+  };
+
+  useEffect(() => {
+    activateButton();
+  }, [userDetails.email, userDetails.password]);
 
   // Function to change password visibility
   const showPassword = () => {
@@ -69,43 +120,62 @@ const LoginPage = () => {
 
   return (
     <section className="flex">
-      <div className=" w-3/6 mt-24 ml-14 ">
+      <div className=" w-3/6 mt-40 ml-14 ">
         <TopHeader
           text="Welcome back to TaskBuddy"
-          style="text-3xl font-semibold my-3"
+          style="text-3xl font-semibold my-3 text-purple-4"
           emoji={"\uD83D\uDC4B"}
         />
-        <FormField
-          text="email"
-          textPlaceholder="Enter Email address"
-          style="w-7/12"
-          register={registerEmailAdd}
-        />
-        <div className="flex items-center justify-between w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
+        <div className="relative mt-2">
+          {loginEmailValidity && (
+            <span className="text-xs text-red italic inline absolute -top-1">
+              invalid email
+            </span>
+          )}
           <FormField
-            text={passwordVisible ? "text" : "password"}
-            textPlaceholder="Enter password"
-            style="w-full flex-grow border-0 pr-28"
-            register={registerLoginPassword}
+            text="email"
+            textPlaceholder="Enter Email address"
+            style="w-7/12 my-3"
+            register={registerEmailAdd}
           />
-          <div onClick={showPassword} className="w-4">
-            {passwordVisible ? <VscEye /> : <VscEyeClosed />}
+        </div>
+
+        <div className="relative mt-2">
+          {loginPasswordValidity && (
+            <p className="text-xs text-red italic inline absolute -top-4">
+              password must be up to 8 characters
+            </p>
+          )}
+          <div className="flex items-center justify-between w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
+            <FormField
+              text={passwordVisible ? "text" : "password"}
+              textPlaceholder="Enter password"
+              style="w-full flex-grow border-0 pr-28 "
+              register={registerLoginPassword}
+            />
+            <div onClick={showPassword} className="w-4">
+              {passwordVisible ? <VscEye /> : <VscEyeClosed />}
+            </div>
           </div>
         </div>
+
         <Link
           to="/forgotPassword"
           className="text-purple-4 font-semibold hover:text-purple-6"
         >
           Forgot Password
         </Link>
-        <div className="mt-8 w-7/12" onClick={showDeets}>
-          <Link
-            to="/dashboard"
-            className="pr-11 py-2  bg-purple-3 text-white w-full rounded-md flex justify-center items-center hover:bg-purple-4"
-          >
-            Login
-          </Link>
-        </div>
+
+        <Link to="/dashboard">
+          <Button
+            btnclick={buttonClick}
+            btnFunc={loginHandler}
+            btnText="Login"
+            style={`pr-11 py-2 my-5 ${
+              buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
+            } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
+          ></Button>
+        </Link>
         <div className="mt-8 flex items-center text-purple-4 font-semibold hover:text-purple-5">
           <IoIosArrowBack />
           <Link to="/">Create an Account</Link>

@@ -1,5 +1,5 @@
 
-import { Client, Account } from "appwrite";
+import { Client, Account,Databases} from "appwrite";
 
 const client = new Client();
 
@@ -11,3 +11,6 @@ client
 ;
 
 export const promise = account;
+
+// Database
+export const databases = new Databases(client,"647ca874cf8af94985ec")
