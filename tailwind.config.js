@@ -15,12 +15,18 @@ export default {
         'purple-6':'#9d4edd',
         'purple-7':'#c77dff',
         'purple-8':'#e0aaff',
+        'purple-9':'#ffc8fb',
         'white':'#f8f9fa',
         'gray-1':'#dee2e6',
         'gray-2':'#ced4da',
+        'gray-3':'#adb5bd',
         'red':'#c1121f',
         'green':'#2a7221',
-        'yellow':'#ffc71f'
+        'yellow':'#ffc71f',
+        'yellow-2' : '#fca311',
+        'orange':'#e36414',
+        'mint':'#2ec4b6',
+        'blue':'#023e8a'
       }
     },
   },

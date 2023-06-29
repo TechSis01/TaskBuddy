@@ -1,16 +1,21 @@
 
-import { Client, Account,Databases} from "appwrite";
+import { Client, Account ,Databases, Storage} from "appwrite";
 
 const client = new Client();
 
 const account = new Account(client);
+
+const storage = new Storage(client);
 
 client
     .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
     .setProject('a1') // Your project ID
 ;
 
+
+
 export const promise = account;
 
 // Database
-export const databases = new Databases(client,"647ca874cf8af94985ec")
+// The database ID is the second argument
+export const databases = new Databases(client) 

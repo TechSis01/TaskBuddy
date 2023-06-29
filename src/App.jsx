@@ -9,8 +9,10 @@ import Profile from "./Profile";
 import Projects from "./Projects";
 import NewTask from "./OtherComponents/NewTask";
 
+// IMPORT IMAGE
+import profilePic from "../src/Images/avatar.jfif"
 // HOOKS IMPORT
-import { useState, createContext } from "react";
+import { useState, createContext, Suspense } from "react";
 import {
   Route,
   createBrowserRouter,
@@ -27,15 +29,17 @@ function App() {
     createRoutesFromElements(
       <Route>
         <Route index element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route element={<Container />}>
-          <Route path="/dashboard" element={<DashboardHome />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path= "/newTask" element={<NewTask />}/>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="container" element={<Container />}>
+          
+            <Route path="dashboard" element={<DashboardHome/>} />
+       
+          <Route path="projects" element={<Projects />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="newTask" element={<NewTask />} />
         </Route>
-        <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
-        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="forgotPassword" element={<ForgotPasswordPage />} />
+        <Route path="resetPassword" element={<ResetPassword />} />
       </Route>
     )
   );
@@ -45,6 +49,9 @@ function App() {
   const [currentUserEmail, setCurrentUserEmail] = useState("");
   // Current UserPassword in App
   const [currentUserPassword, setCurrentUserPassword] = useState("");
+  const [userId, setUserId] = useState("");
+  // STATE FOR THE ALL THE USERS TASKS
+  const [userTasks, setUserTasks] = useState([]);
   //Invalid User State
   const [isUserInvalid, setIsUserInvalid] = useState(false);
   //State for User Details upon registration
@@ -54,23 +61,34 @@ function App() {
     password: "",
   });
   // Preloader State
-  const [loader, setLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
+  // Users events to be on Calendar
+  const [events, setEvents] = useState([
+    {
+      title: "",
+      start: "",
+    },
+  ]);
+
+  const[avatar,setAvatar] = useState(profilePic)
   return (
     <UserContext.Provider
       value={{
         userDetails,
         setUserDetails,
-        currentUser,
-        setCurrentUser,
-        loader,
-        setLoader,
+        isLoading, setIsLoading,
         currentUserEmail,
         setCurrentUserEmail,
         currentUserPassword,
         setCurrentUserPassword,
         isUserInvalid,
         setIsUserInvalid,
+        userId,
+        setUserId,
+        userTasks, setUserTasks,
+        currentUser, setCurrentUser,
+        events, setEvents,avatar,setAvatar
       }}
     >
       <RouterProvider router={router} />

@@ -1,7 +1,7 @@
 import Carousel from "./Carousel";
 import FormField from "./FormField";
 import signUpImages from "./SignupImages";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import { IoIosArrowBack } from "react-icons/io";
 import { useContext, useState, useEffect } from "react";
@@ -9,8 +9,11 @@ import { UserContext } from "../App";
 import { promise } from "../services/appwriteConfig";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
 import Button from "../Button";
-import Preloader from "../OtherComponents/Preloader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+
 const LoginPage = () => {
+  const navigate = useNavigate()
   // State to check email validity
   const [loginEmailValidity, setLoginEmailValidity] = useState(false);
   // State to check password validity
@@ -24,7 +27,9 @@ const LoginPage = () => {
   const {
     userDetails,
     setUserDetails,
+    currentUser,
     setCurrentUser,
+    loader,
     setLoader,
     currentUserEmail,
     setCurrentUserEmail,
@@ -32,8 +37,12 @@ const LoginPage = () => {
     setCurrentUserPassword,
     isUserInvalid,
     setIsUserInvalid,
+    userTasks, setUserTasks,
+    userId, setUserId,
+    signUpLoader ,setSignUpLoader
   } = useContext(UserContext);
 
+  const notifyInvalidUser = () => toast("Invalid user,try again!")
   const registerEmailAdd = (e) => {
     setUserDetails({
       ...userDetails,
@@ -61,39 +70,43 @@ const LoginPage = () => {
   };
 
   const loginHandler = async () => {
-    setLoader(true);
     try {
       let emailSession = await promise.createEmailSession(
         userDetails.email,
         userDetails.password
       );
-      let user = await promise.get();
-      setCurrentUserEmail(user.email);
-      setCurrentUserPassword(user.$id);
-      setCurrentUser(user.name);
-      setIsUserInvalid(false)
-      if (user.name.length > 0) {
-        setLoader(false);
-      }
+     
+      // UserInvalid is to check if the user is using invalid credentials 
+      // setSignUpLoader(true)
+      setIsUserInvalid(false) 
+       navigate("/container/dashboard")
+       localStorage.setItem("userSession",emailSession.$id)
+
     } catch (error) {
-        setIsUserInvalid(true);
-        setLoader(false);
+      if(error.code === 401){
+        setIsUserInvalid(true)
+        notifyInvalidUser()
+      }
+      else{
+        return error;
+      }
     }
   };
 
   const activateButton = () => {
+    
     let emailRegex = /^[\w.-]+@[a-zA-Z_-]+?\.[a-zA-Z]{2,3}$/;
     if (emailRegex.test(userDetails.email) && userDetails.password.length > 7) {
-      setButtonClick(false);
-    } else if (
-      !emailRegex.test(userDetails.email) ||
-      userDetails.password.length < 8
-    ) {
+      setButtonClick(false)
+    }
+     else if ( !emailRegex.test(userDetails.email) || userDetails.password.length < 8 ) {
       setButtonClick(true);
     }
   };
 
   useEffect(() => {
+    // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
+    localStorage.clear()
     activateButton();
   }, [userDetails.email, userDetails.password]);
 
@@ -102,24 +115,11 @@ const LoginPage = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("userId");
-    const secret = urlParams.get("secret");
-
-    promise
-      .updateVerification(userId, secret)
-      .then(() => {
-        console.log("User is verified");
-        history.push("/login");
-      })
-      .catch((e) => {
-        console.log("verification failed");
-      });
-  }, []);
+  
 
   return (
     <section className="flex">
+      <ToastContainer />
       <div className=" w-3/6 mt-40 ml-14 ">
         <TopHeader
           text="Welcome back to TaskBuddy"
@@ -166,8 +166,7 @@ const LoginPage = () => {
           Forgot Password
         </Link>
 
-        <Link to="/dashboard">
-          <Button
+        <Button
             btnclick={buttonClick}
             btnFunc={loginHandler}
             btnText="Login"
@@ -175,7 +174,9 @@ const LoginPage = () => {
               buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
             } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
           ></Button>
-        </Link>
+        {/* <Link to="/container/dashboard">
+        
+        </Link> */}
         <div className="mt-8 flex items-center text-purple-4 font-semibold hover:text-purple-5">
           <IoIosArrowBack />
           <Link to="/">Create an Account</Link>

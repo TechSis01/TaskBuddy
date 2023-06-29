@@ -1,6 +1,4 @@
 import FormField from "./FormField";
-import Carousel from "./Carousel";
-import signUpImages from "./SignupImages";
 import Button from "../Button";
 import TopHeader from "./TopHeader";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,7 +18,6 @@ function ForgotPassword() {
 
   const notify = async (e) => {
     registerEmail(e);
-    console.log(userEmail);
     toast("A password reset email has been sent to your account.", {
       position: "top-left",
       autoClose: 4000,

@@ -4,12 +4,15 @@ import logo from "../Images/brandName.png";
 import { UserContext } from "../App";
 import { useContext, useState, useEffect, useRef } from "react";
 import { promise } from "../services/appwriteConfig";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
 import Button from "../Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 function SignUpForm() {
+  const navigate = useNavigate()
   // Use State from global variable
   const {
     userDetails,
@@ -17,6 +20,8 @@ function SignUpForm() {
     currentUser,
     setCurrentUser,
     setLoader,
+    isLoading, setIsLoading,
+    signUpLoader ,setSignUpLoader
   } = useContext(UserContext);
 
   // State to handle button Clickability
@@ -32,6 +37,19 @@ function SignUpForm() {
   // State to check password validity
   const [userPasswordValidity, setUserPasswordValidity] = useState(false);
 
+  const notify =  () => {
+    toast("An email verification has been sent to you.", {
+      position: "top-left",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   // Register UserName
   const registerUserName = (e) => {
     setUserDetails({
@@ -43,7 +61,6 @@ function SignUpForm() {
       setUserNameValidity(true);
     } else if (e.target.value.length > 0) {
       setUserNameValidity(false);
-      console.log(userDetails.name);
     }
   };
 
@@ -92,14 +109,15 @@ function SignUpForm() {
       setButtonClick(true);
     }
   };
-
+ 
   useEffect(() => {
+    // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
+    localStorage.clear()
     activateButton();
   }, [userDetails.name, userDetails.email, userDetails.password]);
 
   // FUNCTION TO CREATE A NEW USER
   const signup = async () => {
-    setLoader(true);
     try {
       const newUser = await promise.create(
         userDetails.password,
@@ -107,17 +125,15 @@ function SignUpForm() {
         userDetails.password,
         userDetails.name
       );
-
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
+
       verifyUser();
-      setCurrentUser(userDetails.name);
-      console.log(
-        "verification email has been sent to your email check to verify"
-      );
-      if (userDetails.name.length > 0) {
-        setLoader(false);
-      }
+      notify()
+      setTimeout(()=>{
+        navigate("/container/dashboard")
+      },3000)
+      // 
     } catch (error) {
       console.log(error.message);
     }
@@ -126,11 +142,11 @@ function SignUpForm() {
   const verifyUser = async () => {
     try {
       // Authenticate the client by creating an email session
-      await promise.createEmailSession(userDetails.email, userDetails.password);
-
+      let userSession = await promise.createEmailSession(userDetails.email, userDetails.password);
+      localStorage.setItem("userSession",userSession.$id)
       // Verification email sent
-      let verify = await promise.createVerification(
-        "http://localhost:5174/login"
+       await promise.createVerification(
+        "http://localhost:5173/login"
       );
     } catch (error) {}
   };
@@ -142,6 +158,7 @@ function SignUpForm() {
 
   return (
       <section className=" w-3/6 pt-12 ">
+        <ToastContainer />
         <Logo style="w-60 ml-4" image={logo} altText="brandlogo" />
         <div className="ml-14">
           <TopHeader
@@ -203,7 +220,6 @@ function SignUpForm() {
           ) : (
             ""
           )}
-          <Link to="/dashboard">
             <Button
               btnclick={buttonClick}
               btnFunc={signup}
@@ -214,7 +230,6 @@ function SignUpForm() {
                   : "bg-purple-3"
               } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
             ></Button>
-          </Link>
           <p>
             Already have an account?{" "}
             <span>
