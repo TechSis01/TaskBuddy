@@ -1,19 +1,19 @@
 import { UserContext } from "../App";
 import { useContext, useState, useEffect } from "react";
-import { promise } from "../services/appwriteConfig";
+import { promise,storage } from "../services/appwriteConfig";
 import { Link, useFetcher, useLoaderData, useNavigate } from "react-router-dom";
 import Preloader from "../OtherComponents/Preloader";
-import FormField from "../Authentication/FormField";
-import { RxMagnifyingGlass } from "react-icons/rx";
 import { BsCheckLg } from "react-icons/bs";
 import { CiTimer } from "react-icons/ci";
 import { BiAddToQueue } from "react-icons/bi";
 import { FaTasks } from "react-icons/fa";
 import Button from "../Button";
-import { databases } from "../services/appwriteConfig";
+import  { databases } from "../services/appwriteConfig";
 import { Query } from "appwrite";
 import Box from "../OtherComponents/Box";
 import { format } from "date-fns";
+import profilepic from '../Images/avatar.jfif'
+import { client } from "../services/appwriteConfig";
 function DashboardHome() {
   const {
     userTasks,
@@ -24,7 +24,7 @@ function DashboardHome() {
     setIsLoading,
     events, setEvents,
     currentUserEmail,
-    setCurrentUserEmail,
+    setCurrentUserEmail,fileID,setFileID,userId,setUserId,avatar,setAvatar,newUser,setNewUser
   } = useContext(UserContext);
 
   const [totalTasks, setTotalTasks] = useState(0);
@@ -45,10 +45,12 @@ function DashboardHome() {
       setCurrentUser(user.name);
       setCurrentUserEmail(user.email)
       setUserTasks(res.documents);
+      const userTaskArray = JSON.stringify(res.documents);
+      // Store the JSON string in localStorage under a specific key
+      localStorage.setItem('userTasks', userTaskArray)
       setIsLoading(false);
       setTotalTasks(res.total);
-   
-  
+      fetchProfilePic()
       let notStarted = res.documents.filter((task) => {
         return task.status === "Not Started";
       });
@@ -59,21 +61,20 @@ function DashboardHome() {
       setCompletedTasks(complete.length);
 
       let started = res.documents.filter((task) => {
-        return task.status === "Started";
+        return task.status === "In Progress";
       });
       setInProgressTasks(started.length);
     } catch (error) {
       console.log(error.message);
     }
   };
-
   useEffect(()=>{
     const newEvents = userTasks.map((doc) => ({
       title: doc.title,
       priority:doc.priority,
       start: format(new Date(doc.dueDate), 'yyyy-MM-dd')
     }));
-    console.log(newEvents)
+   
     setEvents((prevEvents) => {
       // Filter out existing events to avoid duplicates
       const filteredEvents = newEvents.filter((newEvent) => {
@@ -87,16 +88,29 @@ function DashboardHome() {
       // Combine existing events with new, filtered events
       return [newEvents,...filteredEvents];
     });
+   
   },[userTasks])
 
   useEffect(() => {
-    isLoading && fetchDocs();
+    isLoading && fetchDocs()
   }, [isLoading]);
 
   useEffect(() => {
     setIsLoading(true);
+    setFileID(localStorage.getItem('userSession'))
+   
   }, []);
 
+  const fetchProfilePic = ()=>{
+    if(newUser === false){
+     let profilePic = storage.getFilePreview("649e592acbaca9a5e268",fileID)
+     setAvatar(profilePic)
+    }
+    else if(newUser === true){
+      setAvatar(profilepic)
+    }
+  }
+  
   if (isLoading) {
     return (
       <section className="lg:w-8/12">

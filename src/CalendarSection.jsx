@@ -6,8 +6,9 @@ import TaskCalendar from "./OtherComponents/TaskCalendar";
 import { useContext } from "react";
 import { UserContext } from "./App";
 import ProfilePic from "./OtherComponents/ProfilePic";
+import profilePic from "../src/Images/avatar.jfif"
 function CalendarSection() {
-  const { events, setEvents, avatar, setAvatar, currentUser } =
+  const { events, setEvents, avatar, setAvatar, currentUser,fileID,setFileID } =
     useContext(UserContext);
   const navigate = useNavigate();
   const logOutHandler = async () => {
@@ -15,16 +16,19 @@ function CalendarSection() {
       await promise.deleteSession("current");
       localStorage.removeItem("userSession");
       setEvents([]);
+      setFileID("")
+      setAvatar(profilePic)
       navigate("/login");
     } catch (error) {
       console.log(error.message);
     }
   };
+  
   return (
     <section className="lg:w-4/12 border-gray-2 border-l-2 sticky top-0 h-screen px-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <ProfilePic image={avatar} altText="profile picture" style="w-20"/>
+          <ProfilePic image={avatar} altText="profile picture" style="w-20 rounded-full"/>
           <p className="text-sm">{currentUser}</p>
         </div>
 

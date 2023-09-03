@@ -10,6 +10,7 @@ import { VscEyeClosed, VscEye } from "react-icons/vsc";
 import Button from "../Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import { v4 as uuidv4 } from "uuid";
 
 function SignUpForm() {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ function SignUpForm() {
     setCurrentUser,
     setLoader,
     isLoading, setIsLoading,
-    signUpLoader ,setSignUpLoader
+    signUpLoader ,setSignUpLoader,userId,setUserId,newUser,setNewUser
   } = useContext(UserContext);
 
   // State to handle button Clickability
@@ -113,6 +114,7 @@ function SignUpForm() {
   useEffect(() => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
     localStorage.clear()
+    setNewUser(true)
     activateButton();
   }, [userDetails.name, userDetails.email, userDetails.password]);
 
@@ -120,19 +122,21 @@ function SignUpForm() {
   const signup = async () => {
     try {
       const newUser = await promise.create(
-        userDetails.password,
+       uuidv4(),
         userDetails.email,
         userDetails.password,
         userDetails.name
       );
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
-
+      
       verifyUser();
       notify()
+      console.log(newUser)
       setTimeout(()=>{
         navigate("/container/dashboard")
       },3000)
+      
       // 
     } catch (error) {
       console.log(error.message);
@@ -143,11 +147,15 @@ function SignUpForm() {
     try {
       // Authenticate the client by creating an email session
       let userSession = await promise.createEmailSession(userDetails.email, userDetails.password);
-      localStorage.setItem("userSession",userSession.$id)
+      localStorage.setItem("userSession",userSession.userId)
+      
+      // setNewUser(true)
       // Verification email sent
        await promise.createVerification(
         "http://localhost:5173/login"
       );
+
+      
     } catch (error) {}
   };
 

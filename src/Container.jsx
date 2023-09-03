@@ -7,8 +7,6 @@ import { UserContext } from "./App";
 function Container() {
   const {isLoading, setIsLoading} = useContext(UserContext)
 
-  
-  
     return (
       <section className="flex relative">
         <AsideBar />

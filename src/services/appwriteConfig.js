@@ -1,11 +1,14 @@
 
 import { Client, Account ,Databases, Storage} from "appwrite";
 
-const client = new Client();
+// FOR COMMUNICATING WITH APPWRITES API
+export const client = new Client();
 
+// FOR USER ACCOUNT FUNCTIONALITY AND AUTHENTICATION
 const account = new Account(client);
 
-const storage = new Storage(client);
+// STORAGE FOR IMAGES
+export const storage = new Storage(client);
 
 client
     .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
@@ -17,5 +20,5 @@ client
 export const promise = account;
 
 // Database
-// The database ID is the second argument
+
 export const databases = new Databases(client) 

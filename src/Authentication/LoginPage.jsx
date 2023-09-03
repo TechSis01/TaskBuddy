@@ -27,19 +27,9 @@ const LoginPage = () => {
   const {
     userDetails,
     setUserDetails,
-    currentUser,
-    setCurrentUser,
-    loader,
-    setLoader,
-    currentUserEmail,
-    setCurrentUserEmail,
-    currentUserPassword,
-    setCurrentUserPassword,
-    isUserInvalid,
     setIsUserInvalid,
-    userTasks, setUserTasks,
     userId, setUserId,
-    signUpLoader ,setSignUpLoader
+    signUpLoader ,setSignUpLoader,fileID,setFileID,newUser,setNewUser
   } = useContext(UserContext);
 
   const notifyInvalidUser = () => toast("Invalid user,try again!")
@@ -70,17 +60,20 @@ const LoginPage = () => {
   };
 
   const loginHandler = async () => {
+    setNewUser(false)
     try {
       let emailSession = await promise.createEmailSession(
         userDetails.email,
         userDetails.password
       );
-     
-      // UserInvalid is to check if the user is using invalid credentials 
-      // setSignUpLoader(true)
+      localStorage.setItem("userSession",emailSession.userId)
+      
+      // setFileID(emailSession.userId)
+      // setUserId(emailSession.userId)
       setIsUserInvalid(false) 
+      // console.log(emailSession)
        navigate("/container/dashboard")
-       localStorage.setItem("userSession",emailSession.$id)
+      //  
 
     } catch (error) {
       if(error.code === 401){
@@ -90,6 +83,7 @@ const LoginPage = () => {
       else{
         return error;
       }
+      console.log(error.message)
     }
   };
 
@@ -108,14 +102,13 @@ const LoginPage = () => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
     localStorage.clear()
     activateButton();
+    
   }, [userDetails.email, userDetails.password]);
 
   // Function to change password visibility
   const showPassword = () => {
     setPasswordVisible(!passwordVisible);
   };
-
-  
 
   return (
     <section className="flex">

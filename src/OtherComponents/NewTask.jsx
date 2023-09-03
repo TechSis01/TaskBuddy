@@ -9,7 +9,7 @@ import { UserContext } from "../App";
 import { Link,useNavigate } from "react-router-dom";
 function NewTask() {
   const navigate = useNavigate()
-  const {userId, setUserId} = useContext(UserContext)
+  const {userId, setUserId,fileID,setFileID} = useContext(UserContext)
   const [title, setTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -40,7 +40,8 @@ function NewTask() {
           priority: priority,
           dueDate: dueDate,
           status:"Not Started",
-          uid:userId
+          uid:userId,
+          
         }
       );
       navigate("/container/dashboard")

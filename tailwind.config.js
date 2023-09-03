@@ -26,7 +26,16 @@ export default {
         'yellow-2' : '#fca311',
         'orange':'#e36414',
         'mint':'#2ec4b6',
-        'blue':'#023e8a'
+        'blue':'#023e8a',
+        'dark-gray':'#333333',
+        'flag':'#2ACCCD',
+        "deep-blue":'#183A5F',
+        'olive':'#6A1B9A',
+        'gold':'#FFD700',
+        'orange-light':'#FFC075',
+        'mint-dark':'#25817D',
+        'dark-yellow':'#FFC700',
+        'light-red':'#FFA09E'
       }
     },
   },
