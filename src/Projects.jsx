@@ -56,6 +56,9 @@ function Projects() {
         return task.priority === "High";
       });
       setHighTasks(filteredTasks);
+      const userHighTask = JSON.stringify(filteredTasks);
+      // Store the JSON string in localStorage under a specific key
+      localStorage.setItem('userHighTask', userHighTask)
       navigate("/container/high");
     } catch (error) {
       console.log(error);
@@ -73,6 +76,9 @@ function Projects() {
         return task.priority === "Medium";
       });
       setMediumTasks(filteredTasks);
+      const userMediumTask = JSON.stringify(filteredTasks);
+      // Store the JSON string in localStorage under a specific key
+      localStorage.setItem('userMediumTask', userMediumTask)
       navigate("/container/medium");
     } catch (error) {
       console.log(error);
@@ -90,6 +96,9 @@ function Projects() {
         return task.priority === "low";
       });
       setLowTasks(filteredTasks);
+      const userLowTask = JSON.stringify(filteredTasks);
+      // Store the JSON string in localStorage under a specific key
+      localStorage.setItem('userLowTask', userLowTask)
       navigate("/container/low");
     } catch (error) {
       console.log(error);

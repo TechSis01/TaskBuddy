@@ -81,7 +81,7 @@ function NewTask() {
       let date = new Date(selectedDate);
 
       // Get the month, date, and year
-      let month = date.toLocaleString("default", { month: "long" });
+      let month = date.toLocaleString("default", { month: "short" });
       let day = date.getDate();
       let year = date.getFullYear();
 

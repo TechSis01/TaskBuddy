@@ -14,7 +14,7 @@ function CalendarSection() {
   const logOutHandler = async () => {
     try {
       await promise.deleteSession("current");
-      localStorage.removeItem("userSession");
+      localStorage.clear();
       setEvents([]);
       setFileID("")
       setAvatar(profilePic)
