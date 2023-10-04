@@ -4,16 +4,17 @@ import logo from "../Images/brandName.png";
 import { UserContext } from "../App";
 import { useContext, useState, useEffect, useRef } from "react";
 import { promise } from "../services/appwriteConfig";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TopHeader from "./TopHeader";
 import { VscEyeClosed, VscEye } from "react-icons/vsc";
 import Button from "../Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { v4 as uuidv4 } from "uuid";
+import { BsTruckFlatbed } from "react-icons/bs";
 
 function SignUpForm() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // Use State from global variable
   const {
     userDetails,
@@ -21,8 +22,18 @@ function SignUpForm() {
     currentUser,
     setCurrentUser,
     setLoader,
-    isLoading, setIsLoading,
-    signUpLoader ,setSignUpLoader,userId,setUserId,newUser,setNewUser
+    isLoading,
+    setIsLoading,
+    signUpLoader,
+    setSignUpLoader,
+    userId,
+    setUserId,
+    newUser,
+    setNewUser,
+    newUserSignUp,
+    setNewUserSignUp,
+    newUserSignUpPic,
+    setNewUserSignUpPic,
   } = useContext(UserContext);
 
   // State to handle button Clickability
@@ -38,7 +49,7 @@ function SignUpForm() {
   // State to check password validity
   const [userPasswordValidity, setUserPasswordValidity] = useState(false);
 
-  const notify =  () => {
+  const notify = () => {
     toast("An email verification has been sent to you.", {
       position: "top-left",
       autoClose: 4000,
@@ -85,7 +96,7 @@ function SignUpForm() {
       ...userDetails,
       password: e.target.value,
     });
-    if (userDetails.password.length < 8) {
+    if (userDetails.password.length < 9) {
       setUserPasswordValidity(true);
     } else if (
       userDetails.password.length === 8 ||
@@ -110,11 +121,11 @@ function SignUpForm() {
       setButtonClick(true);
     }
   };
- 
+
   useEffect(() => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
-    localStorage.clear()
-    setNewUser(true)
+    localStorage.clear();
+    setNewUser(true);
     activateButton();
   }, [userDetails.name, userDetails.email, userDetails.password]);
 
@@ -122,22 +133,21 @@ function SignUpForm() {
   const signup = async () => {
     try {
       const newUser = await promise.create(
-       uuidv4(),
+        uuidv4(),
         userDetails.email,
         userDetails.password,
         userDetails.name
       );
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
-      
-      verifyUser();
-      notify()
-      console.log(newUser)
+
+      await verifyUser();
+      console.log("got here", newUserSignUp);
+
       setTimeout(()=>{
         navigate("/container/dashboard")
-      },3000)
-      
-      // 
+
+      },1000)
     } catch (error) {
       console.log(error.message);
     }
@@ -146,17 +156,21 @@ function SignUpForm() {
   const verifyUser = async () => {
     try {
       // Authenticate the client by creating an email session
-      let userSession = await promise.createEmailSession(userDetails.email, userDetails.password);
-      localStorage.setItem("userSession",userSession.userId)
-      
-      // setNewUser(true)
-      // Verification email sent
-       await promise.createVerification(
-        "http://localhost:5173/login"
+      let userSession = await promise.createEmailSession(
+        userDetails.email,
+        userDetails.password
       );
+      localStorage.setItem("userSession", userSession.userId);
 
-      
-    } catch (error) {}
+      await promise.createVerification("http://localhost:5173/login");
+      await notify();
+      setNewUserSignUp(true);
+      setNewUserSignUpPic(true);
+      console.log('new user created')
+    } catch (error) {
+
+      console.log(error);
+    }
   };
 
   // Function to change password visibility
@@ -165,92 +179,90 @@ function SignUpForm() {
   };
 
   return (
-      <section className=" w-3/6 pt-12 ">
-        <ToastContainer />
-        <Logo style="w-60 ml-4" image={logo} altText="brandlogo" />
-        <div className="ml-14">
-          <TopHeader
-            style="text-gray-400"
-            text="Hello there, let's set your goals together"
-            emoji={"\uD83D\uDC4B"}
+    <section className=" w-3/6 pt-12 ">
+      <ToastContainer />
+      <Logo style="w-60 ml-4" image={logo} altText="brandlogo" />
+      <div className="ml-14">
+        <TopHeader
+          style="text-gray-400"
+          text="Hello there, let's set your goals together"
+          emoji={"\uD83D\uDC4B"}
+        />
+        <div className="relative mt-2">
+          {userNameValidity && (
+            <span className="text-xs text-red italic inline absolute -top-1">
+              invalid name
+            </span>
+          )}
+          <FormField
+            text="text"
+            textPlaceholder="Username"
+            style="w-7/12 my-3"
+            register={registerUserName}
           />
-          <div className="relative mt-2">
-            {userNameValidity && (
-              <span className="text-xs text-red italic inline absolute -top-1">
-                invalid name
-              </span>
-            )}
-            <FormField
-              text="text"
-              textPlaceholder="Username"
-              style="w-7/12 my-3"
-              register={registerUserName}
-            />
-          </div>
-          <div className="relative mt-2">
-            {userEmailValidity && (
-              <span className="text-xs text-red italic inline absolute -top-1">
-                invalid email
-              </span>
-            )}
-            <FormField
-              text="email"
-              textPlaceholder="Enter your email"
-              style="w-7/12 my-3"
-              register={registerEmail}
-            />
-          </div>
+        </div>
+        <div className="relative mt-2">
+          {userEmailValidity && (
+            <span className="text-xs text-red italic inline absolute -top-1">
+              invalid email
+            </span>
+          )}
+          <FormField
+            text="email"
+            textPlaceholder="Enter your email"
+            style="w-7/12 my-3"
+            register={registerEmail}
+          />
+        </div>
 
-          <div className="relative mt-2">
-            {userPasswordValidity && (
-              <p className="text-xs text-red italic inline absolute -top-4">
-                password must be up to 8 characters
-              </p>
-            )}
-            <div className="flex items-center justify-between w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
-              <FormField
-                text={passwordVisible ? "text" : "password"}
-                textPlaceholder="Enter password"
-                style="w-full flex-grow border-0 pr-28"
-                register={registerPassword}
-              />
+        <div className="relative mt-2">
+          {userPasswordValidity && (
+            <p className="text-xs text-red italic inline absolute -top-4">
+              password must be up to 8 characters
+            </p>
+          )}
+          <div className="flex items-center justify-between w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
+            <FormField
+              text={passwordVisible ? "text" : "password"}
+              textPlaceholder="Enter password"
+              style="w-full flex-grow border-0 pr-28"
+              register={registerPassword}
+            />
 
-              <div onClick={showPassword} className="w-4">
-                {passwordVisible ? <VscEye /> : <VscEyeClosed />}
-              </div>
+            <div onClick={showPassword} className="w-4">
+              {passwordVisible ? <VscEye /> : <VscEyeClosed />}
             </div>
           </div>
-
-          {buttonClick ? (
-            <p className="text-red font-semibold">
-              Please complete all required fields before proceeding
-            </p>
-          ) : (
-            ""
-          )}
-            <Button
-              btnclick={buttonClick}
-              btnFunc={signup}
-              btnText="Create an Account"
-              style={`pr-11 py-2 my-5 ${
-                buttonClick
-                  ? "bg-purple-400 hover:bg-purple-400"
-                  : "bg-purple-3"
-              } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
-            ></Button>
-          <p>
-            Already have an account?{" "}
-            <span>
-              <Link
-                to="/login"
-                className="text-purple-4 font-semibold hover:text-purple-6"
-              >
-                Sign In
-              </Link>
-            </span>
-          </p>
         </div>
-      </section>
+
+        {buttonClick ? (
+          <p className="text-red font-semibold">
+            Please complete all required fields before proceeding
+          </p>
+        ) : (
+          ""
+        )}
+        <Button
+          btnclick={buttonClick}
+          btnFunc={signup}
+          btnText="Create an Account"
+          style={`pr-11 py-2 my-5 ${
+            buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
+          } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
+        ></Button>
+        <p>
+          Already have an account?{" "}
+          <span>
+            <Link
+              to="/login"
+              className="text-purple-4 font-semibold hover:text-purple-6"
+            >
+              Sign In
+            </Link>
+          </span>
+        </p>
+      </div>
+    </section>
   );
 }
 

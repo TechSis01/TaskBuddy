@@ -7,16 +7,20 @@ import { databases } from "../services/appwriteConfig";
 import { promise } from "../services/appwriteConfig";
 import { UserContext } from "../App";
 import { Link,useNavigate } from "react-router-dom";
+import 'react-datepicker/dist/react-datepicker.css'
+import DatePicker from "react-datepicker"
+import moment from "moment";
 function NewTask() {
   const navigate = useNavigate()
   const {userId, setUserId,fileID,setFileID} = useContext(UserContext)
   const [title, setTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [priority, setPriority] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(new Date())
 
 
   useEffect(() => {
+    console.log(dueDate)
     const fetchUserAccount = async () => {
       try {
         let user = await promise.get();
@@ -41,6 +45,7 @@ function NewTask() {
           dueDate: dueDate,
           status:"Not Started",
           uid:userId,
+          // start:moment(dueDate.slice(0, -5)).toDate()
           
         }
       );
@@ -73,29 +78,13 @@ function NewTask() {
   const handleOptionChange4 = (e) => {
     setPriority(e.target.value);
   };
-
-  const handleDateChange = (e) => {
-    let selectedDate = e.target.value;
-
-      // Create a new Date object from the selected date
-      let date = new Date(selectedDate);
-
-      // Get the month, date, and year
-      let month = date.toLocaleString("default", { month: "short" });
-      let day = date.getDate();
-      let year = date.getFullYear();
-
-      // Format the date
-      let formattedDate = month + " " + day + ", " + year;
-
-    setDueDate(formattedDate);
-  };
+  const weekend = (date) => new Date () < date
   return (
     <section className="lg:w-8/12 pt-5 px-4">
        <TopHeader text="Add New a new Task" style="font-semibold text-3xl" />
       <div className="pt-8">
         <TopHeader text="Task Title" style="font-semibold" />
-        <FormField register={registerTaskTitle} />
+        <FormField register={registerTaskTitle} textPlaceholder="Task Title" />
       </div>
       <div className="pt-8">
         <TopHeader text="Task Description" style="font-semibold" />
@@ -104,6 +93,7 @@ function NewTask() {
           rows="5"
           cols="60"
           onChange={handleTaskDescription}
+          placeholder="Describe your task in detail"
         ></textarea>
       </div>
       <TopHeader text="Set Priority" style="font-semibold" />
@@ -147,7 +137,8 @@ function NewTask() {
       </div>
       <div className="pt-8">
         <TopHeader text="Due Date" style="font-semibold" />
-        <FormField text="date" register={handleDateChange} style="appearance-none bg-white border border-gray-300 px-4 py-2 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:ring-blue-500"/>
+        <DatePicker className="border-2 outline-none rounded-md p-2 cursor-pointer" selected={dueDate} onChange={(date) => setDueDate(date)} filterDate={weekend}/>
+
       </div>
       <Button
         btnFunc={addTasks}

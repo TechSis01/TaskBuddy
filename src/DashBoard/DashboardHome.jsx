@@ -14,6 +14,7 @@ import Box from "../OtherComponents/Box";
 import { format } from "date-fns";
 import profilepic from '../Images/avatar.jfif'
 import { client } from "../services/appwriteConfig";
+import moment from "moment";
 function DashboardHome() {
   const {
     userTasks,
@@ -24,7 +25,7 @@ function DashboardHome() {
     setIsLoading,
     events, setEvents,
     currentUserEmail,
-    setCurrentUserEmail,fileID,setFileID,userId,setUserId,avatar,setAvatar,newUser,setNewUser
+    setCurrentUserEmail,fileID,setFileID,userId,setUserId,avatar,setAvatar,newUser,setNewUser,avatarID,setAvatarID,newUserSignUpPic,setNewUserSignUpPic
   } = useContext(UserContext);
 
   const [totalTasks, setTotalTasks] = useState(0);
@@ -50,7 +51,7 @@ function DashboardHome() {
       localStorage.setItem('userTasks', userTaskArray)
       setIsLoading(false);
       setTotalTasks(res.total);
-      fetchProfilePic()
+      // fetchProfilePic()
       let notStarted = res.documents.filter((task) => {
         return task.status === "Not Started";
       });
@@ -70,24 +71,13 @@ function DashboardHome() {
   };
   useEffect(()=>{
     const newEvents = userTasks.map((doc) => ({
+      start:doc.dueDate,
+      end:doc.dueDate,
       title: doc.title,
       priority:doc.priority,
-      start: format(new Date(doc.dueDate), 'yyyy-MM-dd')
+      
     }));
-   
-    setEvents((prevEvents) => {
-      // Filter out existing events to avoid duplicates
-      const filteredEvents = newEvents.filter((newEvent) => {
-        return !prevEvents.some((prevEvent) => {
-          return (
-            prevEvent.title === newEvent.title && prevEvent.start === newEvent.start
-          );
-        });
-      });
-  
-      // Combine existing events with new, filtered events
-      return [newEvents,...filteredEvents];
-    });
+   setEvents(newEvents)
    
   },[userTasks])
 
@@ -97,20 +87,29 @@ function DashboardHome() {
 
   useEffect(() => {
     setIsLoading(true);
-    setFileID(localStorage.getItem('userSession'))
+   console.log(newUserSignUpPic)
    
   }, []);
 
-  const fetchProfilePic = ()=>{
-    if(newUser === false){
-     let profilePic = storage.getFilePreview("649e592acbaca9a5e268",fileID)
-     setAvatar(profilePic)
+  const fetchProfilePicture = async()=>{
+    try{
+      let user = await promise.get();
+      let res = await databases.listDocuments(
+        "647ca874cf8af94985ec",
+        "65058e1e9a1add9c9034",
+        [Query.equal("uid", user.$id)]
+      );
+        setAvatarID(res.documents[0].$id)
+        setAvatar(res.documents[0].url)
+    }catch(error){
+      console.log(error)
     }
-    else if(newUser === true){
-      setAvatar(profilepic)
-    }
-  }
-  
+}
+
+useEffect(()=>{
+ fetchProfilePicture()
+},[])
+
   if (isLoading) {
     return (
       <section className="lg:w-8/12">
@@ -136,11 +135,6 @@ function DashboardHome() {
           <p className="text-gray-3 text-xs">
             {month} {day}, {year}
           </p>
-          {/* <FormField
-            text="text"
-            textPlaceholder="search tasks"
-            style="w-full"
-          /> */}
         </div>
 
         <div className="flex justify-between">
@@ -212,7 +206,7 @@ function DashboardHome() {
                 </p>
               </div>
 
-              <div className="py-4 ">{task.dueDate}</div>
+              <div className="py-4 ">{moment(task.dueDate).format("MMMM Do YYYY")}</div>
               <div className="py-4 ">{task.status}</div>
             </div>
           ))}

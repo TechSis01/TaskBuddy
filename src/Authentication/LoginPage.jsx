@@ -29,7 +29,7 @@ const LoginPage = () => {
     setUserDetails,
     setIsUserInvalid,
     userId, setUserId,
-    signUpLoader ,setSignUpLoader,fileID,setFileID,newUser,setNewUser
+    signUpLoader ,setSignUpLoader,fileID,setFileID,newUser,setNewUser, newUserSignUp, setNewUserSignUp,setNewUserSignUpPic
   } = useContext(UserContext);
 
   const notifyInvalidUser = () => toast("Invalid user,try again!")
@@ -60,22 +60,19 @@ const LoginPage = () => {
   };
 
   const loginHandler = async () => {
-    setNewUser(false)
+
     try {
       let emailSession = await promise.createEmailSession(
         userDetails.email,
         userDetails.password
       );
       localStorage.setItem("userSession",emailSession.userId)
-      
-      // setFileID(emailSession.userId)
-      // setUserId(emailSession.userId)
-      setIsUserInvalid(false) 
-      // console.log(emailSession)
        navigate("/container/dashboard")
-      //  
-
-    } catch (error) {
+      
+       setNewUserSignUpPic(false)
+       setNewUserSignUp(false)
+    } 
+    catch (error) {
       if(error.code === 401){
         setIsUserInvalid(true)
         notifyInvalidUser()

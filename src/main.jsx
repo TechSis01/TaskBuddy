@@ -1,3 +1,5 @@
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import 'react-tooltip/dist/react-tooltip.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'

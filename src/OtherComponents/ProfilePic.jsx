@@ -1,10 +1,10 @@
 import React from 'react'
 
-function ProfilePic({image,altText,style}) {
+function ProfilePic({image,altText,style,clickImage}) {
   return (
-    
-          <img src={image} alt={altText} className={style}></img>
-    
+    <div>
+          <img src={image} alt={altText} className={style} onClick={clickImage}></img>
+    </div>
   
   )
 }

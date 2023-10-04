@@ -5,11 +5,14 @@ function High() {
     const {highTasks,setHighTasks} = useContext(UserContext)
 
     useEffect(()=>{
-      const highArrayString = localStorage.getItem('userHighTask');
+      const highArrayString = localStorage.getItem('userTasks');
       // Parse the JSON string back into an array and set it in state
       if (highArrayString) {
         const storedArray = JSON.parse(highArrayString);
-        setHighTasks(storedArray);
+        let filteredTask = storedArray.filter((myTasks)=>{
+          return myTasks.priority === "High"
+        })
+        setHighTasks(filteredTask);
       }
     },[])
   return (

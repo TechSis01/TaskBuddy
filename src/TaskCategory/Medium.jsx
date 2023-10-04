@@ -6,11 +6,14 @@ function Medium() {
     const {mediumTasks,setMediumTasks} = useContext(UserContext)
     
     useEffect(()=>{
-      const mediumArrayString = localStorage.getItem('userMediumTask');
+      const mediumArrayString = localStorage.getItem('userTasks');
       // Parse the JSON string back into an array and set it in state
       if (mediumArrayString) {
         const storedArray = JSON.parse(mediumArrayString);
-        setMediumTasks(storedArray);
+        let filteredTask = storedArray.filter((myTasks)=>{
+          return myTasks.priority === "Medium"
+        })
+        setMediumTasks(filteredTask);
       }
      
     },[])

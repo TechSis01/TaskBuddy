@@ -27,8 +27,8 @@ function CalendarSection() {
   return (
     <section className="lg:w-4/12 border-gray-2 border-l-2 sticky top-0 h-screen px-5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <ProfilePic image={avatar} altText="profile picture" style="w-20 rounded-full"/>
+        <div className="flex items-center rounded-full">
+          <ProfilePic image={avatar} altText="profile picture" style="w-9 m-2 rounded-full"/>
           <p className="text-sm">{currentUser}</p>
         </div>
 

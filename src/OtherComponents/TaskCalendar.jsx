@@ -1,44 +1,23 @@
-import FullCalendar from "@fullcalendar/react"
-import dayGridPlugin from '@fullcalendar/daygrid'
-import { useContext,useState } from "react";
+import { momentLocalizer, Calendar } from "react-big-calendar";
+import moment from "moment";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../App";
-function TaskCalendar() {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const{events, setEvents} = useContext(UserContext)
- const[currentEvent,setCurrentEvent] = useState("")
- 
 
-  const handleEventMouseEnter = (info) => {
-    const event = info.event;
-    let fullInfo = event._def.title
-    setShowTooltip(true);
-    setCurrentEvent(fullInfo)
-   
-  };
+const localizer = momentLocalizer(moment);
 
-  const handleEventMouseLeave = (info)=>{
-    setShowTooltip(false)
-  }
+function TaskCalendar(props) {
+  const { events, setEvents } = useContext(UserContext);
 
- 
   return (
-    <div className="text-xs rounded-md cursor-pointer">
-      <FullCalendar 
-       headerToolbar={{start: 'title', // will normally be on the left. if RTL, will be on the right
-       center: '',
-       end: 'prev,next'}} // will normally be on the right. if RTL, will be on the left
-        plugins={[dayGridPlugin]}
-        initialView={"dayGridMonth"}
-        height={"80vh"}
-        aspectRatio={20}
+    <div className="h-4/5 text-sm">
+      <Calendar
+        localizer={localizer}
         events={events}
-        eventMouseEnter={handleEventMouseEnter}
-        eventMouseLeave={handleEventMouseLeave}
-        eventClassNames={["bg-mint"]}
+        defaultView={"month"}
+        views={["month"]}
       />
-       {showTooltip && <div className="absolute top-44 left-16 bg-red text-white p-2 rounded-md font-bold z-10">{currentEvent}</div>}
     </div>
-  )
+  );
 }
+export default TaskCalendar;
 
-export default TaskCalendar

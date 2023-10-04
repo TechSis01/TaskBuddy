@@ -31,7 +31,7 @@ function App() {
   // Routes
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route>
+      <Route >
         <Route index element={<SignupPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="container" element={<Container />}>
@@ -96,6 +96,10 @@ function App() {
   const [highTasks, setHighTasks] = useState([]);
   const [mediumTasks, setMediumTasks] = useState([]);
   const [lowTasks, setLowTasks] = useState([]);
+
+  const [newUserSignUp, setNewUserSignUp] = useState(null);
+  const [newUserSignUpPic, setNewUserSignUpPic] = useState(null);
+  const [avatarID, setAvatarID] = useState("");
   return (
     <UserContext.Provider
       value={{
@@ -135,6 +139,12 @@ function App() {
         setMediumTasks,
         lowTasks,
         setLowTasks,
+        newUserSignUp,
+        setNewUserSignUp,
+        avatarID,
+        setAvatarID,
+        newUserSignUpPic,
+        setNewUserSignUpPic,
       }}
     >
       <RouterProvider router={router} />
