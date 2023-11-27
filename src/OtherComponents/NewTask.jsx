@@ -10,9 +10,10 @@ import { Link,useNavigate } from "react-router-dom";
 import 'react-datepicker/dist/react-datepicker.css'
 import DatePicker from "react-datepicker"
 import moment from "moment";
+import {RxHamburgerMenu} from "react-icons/rx"
 function NewTask() {
   const navigate = useNavigate()
-  const {userId, setUserId,fileID,setFileID} = useContext(UserContext)
+  const {userId, setUserId,fileID,setFileID,isAsideBarOpen, setIsAsideBarOpen,} = useContext(UserContext)
   const [title, setTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -68,19 +69,31 @@ function NewTask() {
 
   const handleOptionChange1 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange2 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange3 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange4 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const weekend = (date) => new Date () < date
+
+  const openAside = ()=>{
+    setIsAsideBarOpen(!isAsideBarOpen)
+  }
   return (
     <section className="lg:w-8/12 pt-5 px-4">
+      <div className="flex justify-between p-5">
+        <div></div>
+        <RxHamburgerMenu onClick={openAside}  />
+      </div>
        <TopHeader text="Add New a new Task" style="font-semibold text-3xl" />
       <div className="pt-8">
         <TopHeader text="Task Title" style="font-semibold" />
@@ -89,7 +102,7 @@ function NewTask() {
       <div className="pt-8">
         <TopHeader text="Task Description" style="font-semibold" />
         <textarea
-          className="border-2 outline-none rounded-md p-2"
+          className="border-2 outline-none rounded-md p-2 w-4/5 lg:w-auto"
           rows="5"
           cols="60"
           onChange={handleTaskDescription}
@@ -97,7 +110,7 @@ function NewTask() {
         ></textarea>
       </div>
       <TopHeader text="Set Priority" style="font-semibold" />
-      <div className="flex justify-between w-6/12">
+      <div className="flex justify-between w-4/5 lg:w-6/12">
         <div>
           <FormField
             text="radio"
@@ -107,6 +120,7 @@ function NewTask() {
             register={handleOptionChange1}
           />
         </div>
+       
         <div>
           <FormField
             text="radio"

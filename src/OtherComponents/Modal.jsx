@@ -10,6 +10,8 @@ import { UserContext } from "../App";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import userPic from "../Images/avatar.jfif";
+import { ToastContainer, toast } from "react-toastify";
+import { AiOutlineClose } from "react-icons/ai";
 function Modal({
   modalState,
   modalStateFunc,
@@ -23,46 +25,68 @@ function Modal({
   userBio,
   setUserData,
   noUserData,
-  documentID
+  documentID,
+  setUserBio,
+  modalBtn,
+  setModalBtn
 }) {
-  let navigate = useNavigate();
-
-  const {
-    newUserSignUp,setNewUserSignUp
-  } = useContext(UserContext);
   const [bio, setBio] = useState("");
   const [skill, setSkill] = useState("");
   const [hobby, setHobby] = useState("");
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
- 
+  const notify = (notifyText) => {
+    toast(notifyText, {
+      position: "top-left",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   const handleBio = (e) => {
     setBio(e.target.value);
   };
   const handleSkillChange = (e) => {
-    setSkill(e.target.value);
-  };
+      setSkill(e.target.value);
+    
+  }
+
   const handleHobbyChange = (e) => {
+    
     setHobby(e.target.value);
   };
 
   const addSkillsArray = () => {
-    setSkills([...skills, skill]);
-    setSkill("");
+    if (!skill) {
+      alert("Empty skill")
+      console.log("skill field is empty")
+    } else if(skill && skill.trim()) {
+      console.log("new skill",skill)
+      setSkills([...skills, skill]);
+      setSkill('');
+    }
+   setSkill("")
   };
-
+  
   const addHobbiesArray = () => {
-    setHobbies([...hobbies, hobby]);
-    setHobby("");
-  };
-
+    // Update the state to add the new hobby
+    setHobbies([...hobbies, hobby])
+    setHobby("")
+  }
   // Function to edit UserProfileBios
   const editUserProfile = async () => {
-    try {
+    let documentKey = uuidv4()
+        try {
       let user = await promise.get();
       let res = await databases.createDocument(
         "647ca874cf8af94985ec",
         "65007b1194c34d190ea8",
-        uuidv4(),
+       documentKey,
         {
           Bio: bio,
           Skills: skills,
@@ -70,7 +94,15 @@ function Modal({
           uid: user.$id,
         }
       );
-      setNewUserSignUp(false)
+      const profileData = {
+        Bio: bio,
+        Skills: skills,
+        Hobbies: hobbies,
+        doc:documentKey
+      }
+      const jsonString = JSON.stringify(profileData)
+      localStorage.setItem("userProfile", jsonString)
+      setUserBio(bio)
       modalStateFunc()
     } catch (error) {
       console.log(error);
@@ -79,133 +111,140 @@ function Modal({
 
   const updateUserProfileBio = async () => {
     try {
-      if(bio.length > 0)
-      await databases.updateDocument(
-        "647ca874cf8af94985ec",
-        "65007b1194c34d190ea8",
-        documentID,
-        {
-          Bio:bio
-        }
-      );
-      else if(bio.length === 0){
+      if (bio.length > 0)
         await databases.updateDocument(
           "647ca874cf8af94985ec",
           "65007b1194c34d190ea8",
           documentID,
           {
-            Bio:userBio
+            Bio: bio,
+          }
+        );
+      else if (bio.length === 0) {
+        await databases.updateDocument(
+          "647ca874cf8af94985ec",
+          "65007b1194c34d190ea8",
+          documentID,
+          {
+            Bio: userBio,
           }
         );
       }
-      modalStateFunc()
+      const usersBio = JSON.parse(localStorage.getItem("userProfile"));
+          usersBio.Bio = bio || userBio
+// Step 3: Update the array in localStorage
+localStorage.setItem("userProfile", JSON.stringify(usersBio))
+      modalStateFunc();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const updateSkills = async()=>{
-    setSkills((prevSkills) => [...prevSkills, skill])
-    try{
-      if(skill.length > 0)
-    await databases.updateDocument(
-        "647ca874cf8af94985ec",
-        "65007b1194c34d190ea8",
-        documentID,
-        {
-          Skills: [...skills, skill]
-        }
-      );
-      else if(skill.length > 0){
-      await databases.updateDocument(
-          "647ca874cf8af94985ec",
-          "65007b1194c34d190ea8",
-          documentID,
-          {
-            Skills:  [...skills, skill]
-          }
-        );
-      }
-    setSkill("")
-    }catch(error){
-      console.log(error)
-    }
+const updateSkills = async () => {
+  if (!skill) {
+   notify("Please add a skill")
+    return; // Don't proceed if the skill is empty
   }
-  const updateHobbies = async()=>{
-    setHobbies((prevHobbies) => [...prevHobbies, hobby])
-    try{
+ else if(skill && skill.trim()){
+  setSkill("");
+  try {
+    await databases.updateDocument(
+      "647ca874cf8af94985ec",
+      "65007b1194c34d190ea8",
+      documentID,
+      {
+        Skills: [...skills, skill],
+      }
+    );
+    // Update the userSkillsArray in localStorage
+    const userSkillsArray = JSON.parse(localStorage.getItem("userProfile"));
+    userSkillsArray.Skills = [...userSkillsArray.Skills, skill];
+    // Update the array in localStorage
+    localStorage.setItem("userProfile", JSON.stringify(userSkillsArray));
+    // Reset the skill input field
+    notify("New skill added")
+  } catch (error) {
+    console.log(error);
+  }
+}
+};
+
+  const updateHobbies = async () => {
+   
+    if (!hobby) {
+      notify("Please add a hobby")
+      return; // Don't proceed if the hobby is empty
+    }
+    else if(hobby && hobby.trim()){
+      setHobby("");
+    try {
       let response = await databases.updateDocument(
         "647ca874cf8af94985ec",
         "65007b1194c34d190ea8",
         documentID,
         {
-          Hobbies: [...hobbies, hobby]
+          Hobbies: [...hobbies, hobby],
         }
       );
-    setHobby("");
-    console.log("working")
-    }catch(error){
-      console.log(error)
+      const userHobbiesArray = JSON.parse(localStorage.getItem("userProfile"));
+      userHobbiesArray.Hobbies = [...userHobbiesArray.Hobbies,hobby]
+// Step 3: Update the array in localStorage
+localStorage.setItem("userProfile", JSON.stringify(userHobbiesArray))
+notify("New hobby added")
+    } catch (error) {
+      console.log(error);
     }
   }
+  };
 
   return createPortal(
     <section className="modalContainer absolute top-0 w-full h-screen bg-black bg-opacity-50">
-      <div className="modalContent bg-white text-black w-6/12 mx-auto mt-20 p-8 rounded-md shadow-xl">
+       <ToastContainer />
+      <div className="modalContent bg-white text-black w-11/12 md:w-6/12 mx-auto mt-20 p-12 rounded-md shadow-xl">
         <div className="flex justify-between">
           <TopHeader
             text="Fill in your Information"
             style="ml-2 font-semibold"
           />
           <div onClick={modalStateFunc} className="cursor-pointer">
-            <GiCancel />
+           <AiOutlineClose />
           </div>
         </div>
-        
+
         <textarea
-          className="border-2 outline-none rounded-md ml-2 p-2"
+          className="border-2 outline-none rounded-md ml-2 p-2 w-4/5 md:w-auto"
           rows="5"
           cols="60"
           placeholder="Bio..."
           onChange={handleBio}
-          value={bio}
+          name={modalBtn === "Save" ? bio : userBio}
+          defaultValue={modalBtn === "Save" ? bio : userBio}
         ></textarea>
         <div className="flex">
-          <FormField
-            text="text"
-            textPlaceholder="Add Skill"
-            style="mb-4 mt-4"
-            register={handleSkillChange}
-            value={skill}
-          />
+          <input type="text" placeholder="Add Skill" className="mb-4 mt-4 border outline-none border-gray-1 py-2 px-2 rounded-md ring-0" onChange={handleSkillChange} value={skill}></input>
           <div className="flex items-center">
+            <button onClick={modalBtn === "Save"? addSkillsArray : updateSkills}>
             <AiOutlinePlus
               className=" bg-gray-1 ml-5 cursor-pointer rounded-full w-6/12"
-              onClick={newUserSignUp ? addSkillsArray : updateSkills}
             />
+            </button>
           </div>
         </div>
         <div className="flex ">
-          <FormField
-            text="text"
-            textPlaceholder="Add Hobby"
-            style="mb-4 mt-4"
-            register={handleHobbyChange}
-            value={hobby}
-          />
+        <input type="text" placeholder="Add Hobby" className="mb-4 mt-4 border outline-none border-gray-1 py-2 px-2 rounded-md ring-0" onChange={handleHobbyChange} value={hobby}></input>
           <div className="flex items-center">
+            <button disabled={isButtonDisabled} onClick={modalBtn === "Save" ? addHobbiesArray : updateHobbies}                                       >
             <AiOutlinePlus
               className=" bg-gray-1 ml-5 cursor-pointer rounded-full w-6/12 "
-              onClick={newUserSignUp ? addHobbiesArray : updateHobbies}
             />
+            </button>
           </div>
         </div>
         <Button
-  btnFunc={newUserSignUp ? editUserProfile : updateUserProfileBio}
-  btnText={newUserSignUp ? "Save" : "Update Bio"}
-  style="ml-2 bg-green text-white px-7 py-2 rounded-md"
-/>
-
+          btnFunc={modalBtn === "Save" ? editUserProfile : updateUserProfileBio}
+          btnText={modalBtn}
+          style="ml-2 bg-green text-white px-7 py-2 rounded-md"
+        />
       </div>
     </section>,
     document.getElementById("modal")

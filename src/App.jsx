@@ -23,6 +23,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import Errorpage from "./OtherComponents/Errorpage";
 
 //Global state to hold the userdetails on Registration
 export const UserContext = createContext();
@@ -46,6 +47,7 @@ function App() {
         </Route>
         <Route path="forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="resetPassword" element={<ResetPassword />} />
+        <Route path="*" element={<Errorpage />} />
       </Route>
     )
   );
@@ -97,9 +99,10 @@ function App() {
   const [mediumTasks, setMediumTasks] = useState([]);
   const [lowTasks, setLowTasks] = useState([]);
 
-  const [newUserSignUp, setNewUserSignUp] = useState(null);
+  const [newUserSignUp, setNewUserSignUp] = useState(true);
   const [newUserSignUpPic, setNewUserSignUpPic] = useState(null);
   const [avatarID, setAvatarID] = useState("");
+  const [isAsideBarOpen, setIsAsideBarOpen] = useState(false)
   return (
     <UserContext.Provider
       value={{
@@ -145,6 +148,7 @@ function App() {
         setAvatarID,
         newUserSignUpPic,
         setNewUserSignUpPic,
+        isAsideBarOpen, setIsAsideBarOpen
       }}
     >
       <RouterProvider router={router} />

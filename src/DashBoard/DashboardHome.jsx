@@ -1,6 +1,6 @@
 import { UserContext } from "../App";
 import { useContext, useState, useEffect } from "react";
-import { promise,storage } from "../services/appwriteConfig";
+import { promise, storage } from "../services/appwriteConfig";
 import { Link, useFetcher, useLoaderData, useNavigate } from "react-router-dom";
 import Preloader from "../OtherComponents/Preloader";
 import { BsCheckLg } from "react-icons/bs";
@@ -8,13 +8,16 @@ import { CiTimer } from "react-icons/ci";
 import { BiAddToQueue } from "react-icons/bi";
 import { FaTasks } from "react-icons/fa";
 import Button from "../Button";
-import  { databases } from "../services/appwriteConfig";
+import { databases } from "../services/appwriteConfig";
 import { Query } from "appwrite";
 import Box from "../OtherComponents/Box";
 import { format } from "date-fns";
-import profilepic from '../Images/avatar.jfif'
+import profilepic from "../Images/avatar.jfif";
 import { client } from "../services/appwriteConfig";
 import moment from "moment";
+import addTaskImage from "../Images/AddTask.gif"
+import CalendarSection from "../CalendarSection";
+import {RxHamburgerMenu} from "react-icons/rx"
 function DashboardHome() {
   const {
     userTasks,
@@ -23,17 +26,57 @@ function DashboardHome() {
     setCurrentUser,
     isLoading,
     setIsLoading,
-    events, setEvents,
+    isAsideBarOpen, setIsAsideBarOpen,
+    events,
+    setEvents,
     currentUserEmail,
-    setCurrentUserEmail,fileID,setFileID,userId,setUserId,avatar,setAvatar,newUser,setNewUser,avatarID,setAvatarID,newUserSignUpPic,setNewUserSignUpPic
+    setCurrentUserEmail,
+    fileID,
+    setFileID,
+    userId,
+    setUserId,
+    avatar,
+    setAvatar,
+    newUser,
+    setNewUser,
+    avatarID,
+    setAvatarID,
+    newUserSignUpPic,
+    setNewUserSignUpPic,
+    newUserSignUp,
+        setNewUserSignUp,
   } = useContext(UserContext);
 
   const [totalTasks, setTotalTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
   const [taskInProgress, setInProgressTasks] = useState(0);
   const [notStartedTasks, setNotStartedTasks] = useState(0);
- 
-  
+
+  const fetchProfile = async () => {
+    try {
+      let user = await promise.get();
+      let res = await databases.listDocuments(
+        "647ca874cf8af94985ec",
+        "65007b1194c34d190ea8",
+        [Query.equal("uid", user.$id)]
+      );
+      if (res.total) {
+        const profileData = {
+          Bio: res.documents[0].Bio,
+          Skills: res.documents[0].Skills,
+          Hobbies: res.documents[0].Hobbies,
+          doc:res.documents[0].$id
+        }
+        const jsonString = JSON.stringify(profileData)
+        localStorage.setItem("userProfile", jsonString)
+        console.log("This is user is available in the database");
+       
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   
   const fetchDocs = async () => {
     try {
@@ -44,11 +87,11 @@ function DashboardHome() {
         [Query.equal("uid", user.$id)]
       );
       setCurrentUser(user.name);
-      setCurrentUserEmail(user.email)
+      setCurrentUserEmail(user.email);
       setUserTasks(res.documents);
       const userTaskArray = JSON.stringify(res.documents);
       // Store the JSON string in localStorage under a specific key
-      localStorage.setItem('userTasks', userTaskArray)
+      localStorage.setItem("userTasks", userTaskArray);
       setIsLoading(false);
       setTotalTasks(res.total);
       // fetchProfilePic()
@@ -65,51 +108,56 @@ function DashboardHome() {
         return task.status === "In Progress";
       });
       setInProgressTasks(started.length);
+      fetchProfile()
+      fetchProfilePicture()
     } catch (error) {
+      console.log(error)
       console.log(error.message);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     const newEvents = userTasks.map((doc) => ({
-      start:doc.dueDate,
-      end:doc.dueDate,
+      start: doc.dueDate,
+      end: doc.dueDate,
       title: doc.title,
-      priority:doc.priority,
-      
+      priority: doc.priority,
     }));
-   setEvents(newEvents)
-   
-  },[userTasks])
+    setEvents(newEvents);
+  }, [userTasks]);
 
   useEffect(() => {
-    isLoading && fetchDocs()
+    isLoading && fetchDocs();
   }, [isLoading]);
 
   useEffect(() => {
     setIsLoading(true);
-   console.log(newUserSignUpPic)
-   
+    setIsAsideBarOpen(false)
   }, []);
 
-  const fetchProfilePicture = async()=>{
-    try{
+  const fetchProfilePicture = async () => {
+    try {
       let user = await promise.get();
       let res = await databases.listDocuments(
         "647ca874cf8af94985ec",
         "65058e1e9a1add9c9034",
         [Query.equal("uid", user.$id)]
       );
-        setAvatarID(res.documents[0].$id)
+      if (res.total) {
+        const profilePictureData = {
+         picURL : res.documents[0].url,
+         uniqueKey:res.documents[0].$id
+
+        }
+        const jsonString = JSON.stringify(profilePictureData)
+        localStorage.setItem("userProfilePicture", jsonString)
         setAvatar(res.documents[0].url)
-    }catch(error){
-      console.log(error)
+        setAvatarID(res.documents[0].$id)
+      }
+    
+    } catch (error) {
+      console.log(error);
     }
-}
-
-useEffect(()=>{
- fetchProfilePicture()
-},[])
-
+  };
   if (isLoading) {
     return (
       <section className="lg:w-8/12">
@@ -123,21 +171,20 @@ useEffect(()=>{
   let month = currentDate.toLocaleString("default", { month: "long" }); // Get the current month (0-11; 0 represents January)
   let day = currentDate.getDate();
 
- 
   return (
-    
-    <section className="lg:w-8/12 ">
-  
-      <section className="pt-2 px-4">
-        <div className="py-4">
+    <section className="w-full lg:w-8/12">
+      <section className="pt-2 px-4 ">
+        <div className="py-4 flex justify-between">
+          <div>
           <h1 className="text-xl font-semibold "> Hello {currentUser} !</h1>
           <p className="italic">What do you want to do today?</p>
           <p className="text-gray-3 text-xs">
             {month} {day}, {year}
           </p>
+          </div>
         </div>
 
-        <div className="flex justify-between">
+        <div className=" grid grid-cols-2 gap-2 xl:flex justify-between">
           <Box
             text="All Tasks"
             number={totalTasks}
@@ -179,7 +226,6 @@ useEffect(()=>{
             style="pr-11 py-2 text-white w-full rounded-md flex justify-center items-center bg-purple-4"
           />
         </Link>
-
         <section className="py-8">
           <div className="grid grid-cols-4 font-semibold py-4">
             <div>Tasks</div>
@@ -188,7 +234,8 @@ useEffect(()=>{
             <div>Status</div>
           </div>
           <hr></hr>
-          {userTasks.map((task) => (
+          {userTasks.length === 0 ? (<img src={addTaskImage} alt="add task image" className="mx-auto"></img> ): (
+            userTasks.map((task) => (
             <div
               key={task.$id}
               className="grid grid-cols-4 hover:bg-purple-100 rounded-md "
@@ -206,10 +253,12 @@ useEffect(()=>{
                 </p>
               </div>
 
-              <div className="py-4 ">{moment(task.dueDate).format("MMMM Do YYYY")}</div>
+              <div className="py-4 ">
+                {moment(task.dueDate).format("MMMM Do YYYY")}
+              </div>
               <div className="py-4 ">{task.status}</div>
             </div>
-          ))}
+          )))}
         </section>
       </section>
     </section>

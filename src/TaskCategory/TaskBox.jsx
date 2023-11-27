@@ -128,7 +128,6 @@ const itemToUpdate = storedArray.map((item) => {
 });
 // Step 3: Update the array in localStorage
 localStorage.setItem("userTasks", JSON.stringify(itemToUpdate))
-
     } catch (error) {
       console.log(error.message);
     }

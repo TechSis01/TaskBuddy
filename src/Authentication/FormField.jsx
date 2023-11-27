@@ -11,7 +11,7 @@ function FormField({
 }) {
   return (
     <div className="flex items-center">
-      <label className="mr-2">{message}</label>
+      <label >{message}</label>
       <input
         type={text}
         placeholder={textPlaceholder}

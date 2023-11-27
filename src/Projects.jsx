@@ -1,16 +1,18 @@
 import Box from "./OtherComponents/Box";
+
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { BsStarFill } from "react-icons/bs";
 import { BsFlagFill } from "react-icons/bs";
 import { BsFillArrowDownCircleFill } from "react-icons/bs";
 import { Link, Outlet } from "react-router-dom";
 import { UserContext } from "./App";
-import { useContext } from "react";
+import { useContext,useEffect } from "react";
 import { databases } from "./services/appwriteConfig";
 import { Query } from "appwrite";
 import { promise } from "./services/appwriteConfig";
 import { useNavigate } from "react-router-dom";
 import { client } from "./services/appwriteConfig";
+import {RxHamburgerMenu} from "react-icons/rx"
 function Projects() {
   const navigate = useNavigate();
   const {
@@ -22,8 +24,12 @@ function Projects() {
     setMediumTasks,
     lowTasks,
     setLowTasks,
+    isAsideBarOpen, setIsAsideBarOpen,
   } = useContext(UserContext);
 
+  useEffect(()=>{
+    setIsAsideBarOpen(false)
+  },[])
   const fetchCriticalTasks = async () => {
     try {
       let user = await promise.get();
@@ -104,10 +110,16 @@ function Projects() {
       console.log(error);
     }
   };
+  
+  
 
   return (
     <section className="lg:w-8/12 px-4">
-      <div className="grid lg:grid-cols-2 gap-2 mt-32">
+      <div className="flex justify-between p-5">
+        <div></div>
+        {/* <RxHamburgerMenu onClick={openAside}  /> */}
+      </div>
+      <div className="grid lg:grid-cols-2 gap-2 mt-auto lg:mt-32">
         {/* <Link to="/container/critical"> */}
         <div
           className="bg-red lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-orange-light hover:scale-y-105 shadow-xl"

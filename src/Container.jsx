@@ -4,14 +4,21 @@ import AsideBar from "./OtherComponents/AsideBar";
 import Preloader from "./OtherComponents/Preloader";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./App";
+import {RxHamburgerMenu} from "react-icons/rx"
 function Container() {
   const {
-    isLoading,
-    setIsLoading,
+    // isLoading,
+    // setIsLoading,
     events,
     userTasks,
     setEvents,
+    isAsideBarOpen, setIsAsideBarOpen,
   } = useContext(UserContext);
+
+  const openAside = ()=>{
+    setIsAsideBarOpen(true)
+  }
+
 
   useEffect(() => {
     let items = localStorage.getItem("userTasks");
@@ -24,13 +31,14 @@ function Container() {
         priority: doc.priority,
       }));
       setEvents(newEvents);
-      console.log(newEvents);
+      
     }
-   
+    setIsAsideBarOpen(false)
   }, []);
 
   return (
-    <section className="flex relative">
+    <section className="lg:flex relative text-xs md:text-base">
+      <RxHamburgerMenu onClick={openAside} className="lg:hidden mt-5 ml-auto mr-5"/>
       <AsideBar />
       <Outlet />
       <CalendarSection />

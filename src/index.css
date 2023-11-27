@@ -10,6 +10,12 @@ html{
     font-family: 'Public Sans', sans-serif;
   
 }
+body{
+    overflow: hidden;
+}
+/* body{
+    overflow-x: hidden;
+} */
 .active{
     background-color:rgba(33, 37, 41, 0.3);
     color:white;
@@ -36,3 +42,12 @@ html{
     background-color:#5a197a !important;
 }
 /* className="my-16 pl-8" */
+
+
+/* Apply styles for screen sizes 1280px and above */ 
+@media (max-width: 1024px) {
+    body {
+      overflow-x: hidden;
+    }
+  }
+  

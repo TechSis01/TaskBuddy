@@ -1,6 +1,7 @@
 import { useContext,useEffect } from "react"
 import { UserContext } from "../App"
 import TaskBox from "./TaskBox"
+import FileSearch from "../Images/FileS.gif"
 function High() {
     const {highTasks,setHighTasks} = useContext(UserContext)
 
@@ -18,7 +19,10 @@ function High() {
   return (
     <section className="lg:w-8/12 px-4">
        <h2 className="mt-5 text-xl font-semibold">High Tasks</h2>
+       {highTasks.length === 0 ? (<img src={FileSearch} alt="File Searcher" className="mx-auto"></img>) : (
        <TaskBox task = {highTasks} setTasks={setHighTasks}/>
+
+       )}
     </section>
   )
 }

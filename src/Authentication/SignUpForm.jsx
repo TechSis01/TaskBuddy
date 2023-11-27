@@ -12,7 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { v4 as uuidv4 } from "uuid";
 import { BsTruckFlatbed } from "react-icons/bs";
-
+import loadButton from "../Images/btnLoad.gif"
 function SignUpForm() {
   const navigate = useNavigate();
   // Use State from global variable
@@ -48,7 +48,7 @@ function SignUpForm() {
   const [userEmailValidity, setUserEmailValidity] = useState(false);
   // State to check password validity
   const [userPasswordValidity, setUserPasswordValidity] = useState(false);
-
+  const [signUpText ,setSignUpText] = useState(false)
   const notify = () => {
     toast("An email verification has been sent to you.", {
       position: "top-left",
@@ -131,6 +131,7 @@ function SignUpForm() {
 
   // FUNCTION TO CREATE A NEW USER
   const signup = async () => {
+    setSignUpText(true)
     try {
       const newUser = await promise.create(
         uuidv4(),
@@ -140,15 +141,13 @@ function SignUpForm() {
       );
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
-
+     
       await verifyUser();
-      console.log("got here", newUserSignUp);
-
       setTimeout(()=>{
         navigate("/container/dashboard")
-
       },1000)
     } catch (error) {
+      console.log(error)
       console.log(error.message);
     }
   };
@@ -163,10 +162,7 @@ function SignUpForm() {
       localStorage.setItem("userSession", userSession.userId);
 
       await promise.createVerification("http://localhost:5173/login");
-      await notify();
-      setNewUserSignUp(true);
-      setNewUserSignUpPic(true);
-      console.log('new user created')
+      notify();
     } catch (error) {
 
       console.log(error);
@@ -179,10 +175,10 @@ function SignUpForm() {
   };
 
   return (
-    <section className=" w-3/6 pt-12 ">
+    <section className=" md:w-3/6 pt-12 text-xs md:text-base ">
       <ToastContainer />
-      <Logo style="w-60 ml-4" image={logo} altText="brandlogo" />
-      <div className="ml-14">
+      <Logo style="w-60 md:ml-4" image={logo} altText="brandlogo" />
+      <div className="mx-auto w-4/5 md:w-auto md:ml-14">
         <TopHeader
           style="text-gray-400"
           text="Hello there, let's set your goals together"
@@ -197,7 +193,7 @@ function SignUpForm() {
           <FormField
             text="text"
             textPlaceholder="Username"
-            style="w-7/12 my-3"
+            style="w-4/5 md:w-7/12 my-3"
             register={registerUserName}
           />
         </div>
@@ -210,7 +206,7 @@ function SignUpForm() {
           <FormField
             text="email"
             textPlaceholder="Enter your email"
-            style="w-7/12 my-3"
+            style="w-4/5 md:w-7/12 my-3"
             register={registerEmail}
           />
         </div>
@@ -221,7 +217,7 @@ function SignUpForm() {
               password must be up to 8 characters
             </p>
           )}
-          <div className="flex items-center justify-between w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
+          <div className="flex items-center justify-between w-4/5 md:w-7/12 border outline-none my-3 border-gray-1 px-2 rounded-md ring-0">
             <FormField
               text={passwordVisible ? "text" : "password"}
               textPlaceholder="Enter password"
@@ -236,7 +232,7 @@ function SignUpForm() {
         </div>
 
         {buttonClick ? (
-          <p className="text-red font-semibold">
+          <p className="text-red">
             Please complete all required fields before proceeding
           </p>
         ) : (
@@ -245,8 +241,8 @@ function SignUpForm() {
         <Button
           btnclick={buttonClick}
           btnFunc={signup}
-          btnText="Create an Account"
-          style={`pr-11 py-2 my-5 ${
+          btnText={signUpText ? <img src={loadButton} alt="spinner"></img> : "Create an Account"}
+          style={`md:pr-11 py-2 my-5 ${
             buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
           } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
         ></Button>
