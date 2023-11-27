@@ -161,7 +161,7 @@ function SignUpForm() {
       );
       localStorage.setItem("userSession", userSession.userId);
 
-      await promise.createVerification("http://localhost:5173/login");
+      await promise.createVerification("https://taskbuddy-mu.vercel.app/login");
       notify();
     } catch (error) {
 

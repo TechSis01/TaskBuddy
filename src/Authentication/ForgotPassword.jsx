@@ -31,7 +31,7 @@ function ForgotPassword() {
     try {
       await promise.createRecovery(
         userEmail,
-        "http://localhost:5173/resetPassword"
+        "https://taskbuddy-mu.vercel.app/resetPassword"
       );
     } catch (e) {
       console.log("error");
