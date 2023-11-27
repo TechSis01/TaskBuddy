@@ -7,16 +7,21 @@ import { databases } from "../services/appwriteConfig";
 import { promise } from "../services/appwriteConfig";
 import { UserContext } from "../App";
 import { Link,useNavigate } from "react-router-dom";
+import 'react-datepicker/dist/react-datepicker.css'
+import DatePicker from "react-datepicker"
+import moment from "moment";
+import {RxHamburgerMenu} from "react-icons/rx"
 function NewTask() {
   const navigate = useNavigate()
-  const {userId, setUserId} = useContext(UserContext)
+  const {userId, setUserId,fileID,setFileID,isAsideBarOpen, setIsAsideBarOpen,} = useContext(UserContext)
   const [title, setTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [priority, setPriority] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(new Date())
 
 
   useEffect(() => {
+    console.log(dueDate)
     const fetchUserAccount = async () => {
       try {
         let user = await promise.get();
@@ -40,7 +45,9 @@ function NewTask() {
           priority: priority,
           dueDate: dueDate,
           status:"Not Started",
-          uid:userId
+          uid:userId,
+          // start:moment(dueDate.slice(0, -5)).toDate()
+          
         }
       );
       navigate("/container/dashboard")
@@ -62,51 +69,48 @@ function NewTask() {
 
   const handleOptionChange1 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange2 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange3 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
   const handleOptionChange4 = (e) => {
     setPriority(e.target.value);
+    console.log(e.target.value)
   };
+  const weekend = (date) => new Date () < date
 
-  const handleDateChange = (e) => {
-    let selectedDate = e.target.value;
-
-      // Create a new Date object from the selected date
-      let date = new Date(selectedDate);
-
-      // Get the month, date, and year
-      let month = date.toLocaleString("default", { month: "long" });
-      let day = date.getDate();
-      let year = date.getFullYear();
-
-      // Format the date
-      let formattedDate = month + " " + day + ", " + year;
-
-    setDueDate(formattedDate);
-  };
+  const openAside = ()=>{
+    setIsAsideBarOpen(!isAsideBarOpen)
+  }
   return (
     <section className="lg:w-8/12 pt-5 px-4">
+      <div className="flex justify-between p-5">
+        <div></div>
+        <RxHamburgerMenu onClick={openAside}  />
+      </div>
        <TopHeader text="Add New a new Task" style="font-semibold text-3xl" />
       <div className="pt-8">
         <TopHeader text="Task Title" style="font-semibold" />
-        <FormField register={registerTaskTitle} />
+        <FormField register={registerTaskTitle} textPlaceholder="Task Title" />
       </div>
       <div className="pt-8">
         <TopHeader text="Task Description" style="font-semibold" />
         <textarea
-          className="border-2 outline-none rounded-md p-2"
+          className="border-2 outline-none rounded-md p-2 w-4/5 lg:w-auto"
           rows="5"
           cols="60"
           onChange={handleTaskDescription}
+          placeholder="Describe your task in detail"
         ></textarea>
       </div>
       <TopHeader text="Set Priority" style="font-semibold" />
-      <div className="flex justify-between w-6/12">
+      <div className="flex justify-between w-4/5 lg:w-6/12">
         <div>
           <FormField
             text="radio"
@@ -116,6 +120,7 @@ function NewTask() {
             register={handleOptionChange1}
           />
         </div>
+       
         <div>
           <FormField
             text="radio"
@@ -146,7 +151,8 @@ function NewTask() {
       </div>
       <div className="pt-8">
         <TopHeader text="Due Date" style="font-semibold" />
-        <FormField text="date" register={handleDateChange} style="appearance-none bg-white border border-gray-300 px-4 py-2 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:ring-blue-500"/>
+        <DatePicker className="border-2 outline-none rounded-md p-2 cursor-pointer" selected={dueDate} onChange={(date) => setDueDate(date)} filterDate={weekend}/>
+
       </div>
       <Button
         btnFunc={addTasks}

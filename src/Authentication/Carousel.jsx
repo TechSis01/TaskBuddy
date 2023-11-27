@@ -14,7 +14,7 @@ function Carousel({carouselImages}) {
           arrows:false,
         };
   return (
-    <div className="bg-purple-4 w-3/6">
+    <div className="bg-purple-4 w-3/6 hidden md:block">
          <Slider {...settings}>
          {carouselImages.map((images)=>(
           <img src={images.img} alt="to-do-list illustration" key={images.id}></img>

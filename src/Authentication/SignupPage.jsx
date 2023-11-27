@@ -5,9 +5,9 @@ import Preloader from "../OtherComponents/Preloader";
 function SignupPage() {
   return (
     <>
-      <section className="flex">
+      <section className="md:flex">
         <SignUpForm />
-        <Carousel carouselImages={signUpImages} />
+        <Carousel carouselImages={signUpImages}  />
       </section>
     </>
   );

@@ -8,9 +8,13 @@ import Container from "./Container";
 import Profile from "./Profile";
 import Projects from "./Projects";
 import NewTask from "./OtherComponents/NewTask";
+import Critical from "./TaskCategory/Critical";
+import High from "./TaskCategory/High";
+import Medium from "./TaskCategory/Medium";
+import Low from "./TaskCategory/Low";
 
 // IMPORT IMAGE
-import profilePic from "../src/Images/avatar.jfif"
+import profilePic from "../src/Images/avatar.jfif";
 // HOOKS IMPORT
 import { useState, createContext, Suspense } from "react";
 import {
@@ -19,6 +23,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import Errorpage from "./OtherComponents/Errorpage";
 
 //Global state to hold the userdetails on Registration
 export const UserContext = createContext();
@@ -27,19 +32,22 @@ function App() {
   // Routes
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route>
+      <Route >
         <Route index element={<SignupPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="container" element={<Container />}>
-          
-            <Route path="dashboard" element={<DashboardHome/>} />
-       
+          <Route path="dashboard" element={<DashboardHome />} />
           <Route path="projects" element={<Projects />} />
+          <Route path="critical" element={<Critical />} />
+          <Route path="high" element={<High />} />
+          <Route path="medium" element={<Medium />} />
+          <Route path="low" element={<Low />} />
           <Route path="profile" element={<Profile />} />
           <Route path="newTask" element={<NewTask />} />
         </Route>
         <Route path="forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="resetPassword" element={<ResetPassword />} />
+        <Route path="*" element={<Errorpage />} />
       </Route>
     )
   );
@@ -61,7 +69,7 @@ function App() {
     password: "",
   });
   // Preloader State
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   // Users events to be on Calendar
   const [events, setEvents] = useState([
@@ -70,14 +78,38 @@ function App() {
       start: "",
     },
   ]);
+  // PROFILE PIC STATE
+  const [avatar, setAvatar] = useState(profilePic);
 
-  const[avatar,setAvatar] = useState(profilePic)
+  // File ID State
+  const [fileID, setFileID] = useState("");
+
+  // PROFILE DOCUMENT STATE
+  const [profile, setProfile] = useState({});
+
+  // DOCUMENT ID
+
+  const [documentID, setDocumentID] = useState("");
+
+  // NEW USER
+  const [newUser, setNewUser] = useState(true);
+
+  const [criticalTasks, setCriticalTasks] = useState([]);
+  const [highTasks, setHighTasks] = useState([]);
+  const [mediumTasks, setMediumTasks] = useState([]);
+  const [lowTasks, setLowTasks] = useState([]);
+
+  const [newUserSignUp, setNewUserSignUp] = useState(true);
+  const [newUserSignUpPic, setNewUserSignUpPic] = useState(null);
+  const [avatarID, setAvatarID] = useState("");
+  const [isAsideBarOpen, setIsAsideBarOpen] = useState(false)
   return (
     <UserContext.Provider
       value={{
         userDetails,
         setUserDetails,
-        isLoading, setIsLoading,
+        isLoading,
+        setIsLoading,
         currentUserEmail,
         setCurrentUserEmail,
         currentUserPassword,
@@ -86,9 +118,37 @@ function App() {
         setIsUserInvalid,
         userId,
         setUserId,
-        userTasks, setUserTasks,
-        currentUser, setCurrentUser,
-        events, setEvents,avatar,setAvatar
+        userTasks,
+        setUserTasks,
+        currentUser,
+        setCurrentUser,
+        events,
+        setEvents,
+        avatar,
+        setAvatar,
+        fileID,
+        setFileID,
+        newUser,
+        setNewUser,
+        profile,
+        setProfile,
+        documentID,
+        setDocumentID,
+        criticalTasks,
+        setCriticalTasks,
+        highTasks,
+        setHighTasks,
+        mediumTasks,
+        setMediumTasks,
+        lowTasks,
+        setLowTasks,
+        newUserSignUp,
+        setNewUserSignUp,
+        avatarID,
+        setAvatarID,
+        newUserSignUpPic,
+        setNewUserSignUpPic,
+        isAsideBarOpen, setIsAsideBarOpen
       }}
     >
       <RouterProvider router={router} />
