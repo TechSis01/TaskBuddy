@@ -11,7 +11,8 @@ html{
   
 }
 body{
-    overflow: hidden;
+    overflow-x: hidden;
+    height:100vh;
 }
 /* body{
     overflow-x: hidden;
@@ -38,9 +39,9 @@ body{
 .rbc-month-view{
     font-size:0.7rem;
 }
-.rbc-event{
+/* .rbc-event{
     background-color:#5a197a
-}
+} */
 /* className="my-16 pl-8" */
 
 

@@ -13,24 +13,24 @@ import { promise } from "./services/appwriteConfig";
 import { useNavigate } from "react-router-dom";
 import { client } from "./services/appwriteConfig";
 import {RxHamburgerMenu} from "react-icons/rx"
+import Preloader from "./OtherComponents/Preloader";
 function Projects() {
   const navigate = useNavigate();
   const {
-    criticalTasks,
+    isLoading,
+    setIsLoading,
     setCriticalTasks,
-    highTasks,
     setHighTasks,
-    mediumTasks,
     setMediumTasks,
-    lowTasks,
     setLowTasks,
-    isAsideBarOpen, setIsAsideBarOpen,
+   setIsAsideBarOpen,
   } = useContext(UserContext);
 
   useEffect(()=>{
     setIsAsideBarOpen(false)
   },[])
   const fetchCriticalTasks = async () => {
+    setIsLoading(true);
     try {
       let user = await promise.get();
       let response = await databases.listDocuments(
@@ -46,11 +46,16 @@ function Projects() {
       // Store the JSON string in localStorage under a specific key
       localStorage.setItem('userCriticalTask', userCriticalTask)
       navigate("/container/critical");
+      setIsLoading(false)
     } catch (error) {
+      setIsLoading(false)
       console.log(error);
     }
   };
   const fetchHighTasks = async () => {
+    
+    setIsLoading(true);
+
     try {
       let user = await promise.get();
       let response = await databases.listDocuments(
@@ -66,11 +71,16 @@ function Projects() {
       // Store the JSON string in localStorage under a specific key
       localStorage.setItem('userHighTask', userHighTask)
       navigate("/container/high");
+      setIsLoading(false)
+
     } catch (error) {
+      setIsLoading(false)
       console.log(error);
     }
   };
   const fetchMediumTasks = async () => {
+    setIsLoading(true);
+
     try {
       let user = await promise.get();
       let response = await databases.listDocuments(
@@ -86,11 +96,16 @@ function Projects() {
       // Store the JSON string in localStorage under a specific key
       localStorage.setItem('userMediumTask', userMediumTask)
       navigate("/container/medium");
+      setIsLoading(false)
+
     } catch (error) {
+      setIsLoading(false)
       console.log(error);
     }
   };
   const fetchLowTasks = async () => {
+    setIsLoading(true);
+
     try {
       let user = await promise.get();
       let response = await databases.listDocuments(
@@ -106,11 +121,21 @@ function Projects() {
       // Store the JSON string in localStorage under a specific key
       localStorage.setItem('userLowTask', userLowTask)
       navigate("/container/low");
+      setIsLoading(false) 
     } catch (error) {
+      setIsLoading(false)
       console.log(error);
     }
   };
   
+  if (isLoading) {
+    return (
+      <section className="lg:w-8/12">
+        <Preloader />
+      </section>
+    );
+  }
+
   
 
   return (
@@ -119,10 +144,10 @@ function Projects() {
         <div></div>
         {/* <RxHamburgerMenu onClick={openAside}  /> */}
       </div>
-      <div className="grid lg:grid-cols-2 gap-2 mt-auto lg:mt-32">
+      <div className="grid lg:grid-cols-2 gap-2 mt-auto lg:mt-10">
         {/* <Link to="/container/critical"> */}
         <div
-          className="bg-red lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-orange-light hover:scale-y-105 shadow-xl"
+          className="bg-red lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-orange-light hover:scale-y-105 shadow-xl cursor-pointer"
           onClick={fetchCriticalTasks}
         >
           <AiFillExclamationCircle className="text-9xl text-white" />
@@ -132,7 +157,7 @@ function Projects() {
 
         {/* <Link to="/container/high"> */}
         <div
-          className="bg-orange lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-orange-light hover:scale-y-105 shadow-xl"
+          className="bg-orange lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-orange-light hover:scale-y-105 shadow-xl cursor-pointer"
           onClick={fetchHighTasks}
         >
           <BsStarFill className="text-9xl text-gold" />
@@ -142,7 +167,7 @@ function Projects() {
 
         {/* <Link to="/container/medium"> */}
         <div
-          className="bg-mint lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-mint-dark hover:scale-y-105 shadow-xl"
+          className="bg-mint lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-mint-dark hover:scale-y-105 shadow-xl cursor-pointer"
           onClick={fetchMediumTasks}
         >
           <BsFlagFill className="text-9xl text-deep-blue" />
@@ -154,7 +179,7 @@ function Projects() {
 
         {/* <Link to="/container/low"> */}
         <div
-          className="bg-yellow lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-dark-yellow hover:scale-y-105 shadow-xl"
+          className="bg-yellow lg:h-56 flex justify-center items-center flex-col rounded-md hover:border-2 hover:border-dark-yellow hover:scale-y-105 shadow-xl cursor-pointer"
           onClick={fetchLowTasks}
         >
           <BsFillArrowDownCircleFill className="text-9xl text-olive" />

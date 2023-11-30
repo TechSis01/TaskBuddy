@@ -96,11 +96,11 @@ function SignUpForm() {
       ...userDetails,
       password: e.target.value,
     });
-    if (userDetails.password.length < 9) {
+    if (userDetails.password.length <= 6) {
       setUserPasswordValidity(true);
     } else if (
-      userDetails.password.length === 8 ||
-      userDetails.password.length > 8
+      
+      userDetails.password.length > 6
     ) {
       setUserPasswordValidity(false);
     }
@@ -109,14 +109,13 @@ function SignUpForm() {
     let emailRegex = /^[\w.-]+@[a-zA-Z_-]+?\.[a-zA-Z]{2,3}$/;
     if (
       userDetails.name.length > 0 &&
-      emailRegex.test(userDetails.email) &&
-      userDetails.password.length > 7
+      userDetails.password.length >= 8
     ) {
       setButtonClick(false);
     } else if (
       userDetails.name.length === 0 ||
       !emailRegex.test(userDetails.email) ||
-      userDetails.password.length < 8
+      userDetails.password.length <= 7
     ) {
       setButtonClick(true);
     }
@@ -131,7 +130,7 @@ function SignUpForm() {
 
   // FUNCTION TO CREATE A NEW USER
   const signup = async () => {
-    setSignUpText(true)
+   
     try {
       const newUser = await promise.create(
         uuidv4(),
@@ -141,14 +140,13 @@ function SignUpForm() {
       );
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
-     
+      setSignUpText(true)
       await verifyUser();
       setTimeout(()=>{
         navigate("/container/dashboard")
       },1000)
     } catch (error) {
       console.log(error)
-      console.log(error.message);
     }
   };
 
@@ -164,7 +162,6 @@ function SignUpForm() {
       await promise.createVerification("https://taskbuddy-mu.vercel.app/login");
       notify();
     } catch (error) {
-
       console.log(error);
     }
   };
@@ -242,6 +239,7 @@ function SignUpForm() {
           btnclick={buttonClick}
           btnFunc={signup}
           btnText={signUpText ? <img src={loadButton} alt="spinner"></img> : "Create an Account"}
+          // btnText={signUpText ? "loading...": "Create an Account"}
           style={`md:pr-11 py-2 my-5 ${
             buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
           } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}

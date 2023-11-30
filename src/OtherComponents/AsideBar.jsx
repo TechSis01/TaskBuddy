@@ -31,9 +31,9 @@ function AsideBar() {
     }
   };
   return (
-    <aside className={`${isAsideBarOpen ? "translate-x-2/4 transform transition-transform ease-in-out duration-300" : "translate-x-full transition-transform ease-in-out duration-300"} lg:-translate-x-0 xl:translate-x-0 z-10 fixed bg-purple-4 md:sticky text-white top-0 h-screen lg:w-2/12`}>
-      <button onClick={closeAside} className="lg:hidden"><AiOutlineClose className="ml-40 mt-5"/></button>
-      <div className="flex w-6/12 justify-between px-2 items-center rounded-full md:hidden">
+    <aside className={`${isAsideBarOpen ? "translate-x-2/4 transform transition-transform ease-in-out duration-300" : "translate-x-full transition-transform ease-in-out duration-300"} lg:-translate-x-0 xl:translate-x-0 z-10 fixed md:sticky overflow-hidden bg-purple-4 text-white top-0 h-screen lg:w-2/12`}>
+      <button onClick={closeAside} className="lg:hidden"><AiOutlineClose className="ml-40 mt-5 text-lg"/></button>
+      <div className="flex w-6/12 justify-around px-2 items-center rounded-full md:hidden">
           <ProfilePic image={avatar} altText="profile picture" style="w-9 m-2 rounded-full"/>
           <p className="text-xm">{currentUser}</p>
         </div>
@@ -67,7 +67,7 @@ function AsideBar() {
       <Button
           btnText="Logout"
           btnFunc={logOutHandler}
-          style={` md:hidden py-2 bg-red
+          style={`my-2 md:hidden py-2 bg-red
               } text-white w-1/4 rounded-md flex justify-center items-center ml-5`}
         />
     </aside>

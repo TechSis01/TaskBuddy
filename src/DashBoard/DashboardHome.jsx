@@ -111,8 +111,8 @@ function DashboardHome() {
       fetchProfile()
       fetchProfilePicture()
     } catch (error) {
+      setIsLoading(false)
       console.log(error)
-      console.log(error.message);
     }
   };
   useEffect(() => {
@@ -180,7 +180,7 @@ function DashboardHome() {
   let day = currentDate.getDate();
 
   return (
-    <section className="w-full lg:w-8/12">
+    <section className="w-full lg:flex-1 lg:overflow-y-auto">
       <section className="pt-2 px-4 ">
         <div className="py-4 flex justify-between">
           <div>

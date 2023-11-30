@@ -303,7 +303,7 @@ setEvents(newEvents);
                 className="mr-5 cursor-pointer hover:text-lg transition duration-500 ease-in-out"
               />
             </div>
-            <div className=" flex w-2/12 justify-between">
+            <div className=" flex w-4/12 md:w-2/12 justify-between">
             <button
               onClick={() => updateTitle(tas)}
               className="bg-deep-blue text-white text-xs px-2 py-1 mt-2 rounded-md"
@@ -330,17 +330,17 @@ setEvents(newEvents);
                   value={tas.taskDescription}
                   type="text"
                   onChange={(event) => editDescription(event, tas)}
-                  className="border border-gray-50 outline-none p-2 focus:border overflow-hidden"
+                  className="w-full border border-gray-50 outline-none p-2 focus:border overflow-hidden"
                 ></textarea>
               ) : (
-                <p className = "max-w-lg">{tas.taskDescription}</p>
+                <p className = "w-full">{tas.taskDescription}</p>
               )}
               <BsPencil
                 onClick={()=>editUserDescriptionInputs(index)}
-                className="mr-5 cursor-pointer hover:text-lg transition duration-500 ease-in-out"
+                className="mr-5 cursor-pointer sticky hover:text-lg transition duration-500 ease-in-out"
               />
             </div>
-            <div className=" flex w-2/12 justify-between">
+            <div className=" flex w-4/12 md:w-2/12 justify-between">
             <button
               onClick={() => updateDescription(tas)}
               className="bg-deep-blue text-white text-xs px-2 py-1 mt-2 rounded-md"
@@ -369,10 +369,10 @@ setEvents(newEvents);
           </div>
           <div className="flex justify-between items-center border-b py-4 pl-5 ">
             
-            <div className="w-3/12 flex justify-between">
+            <div className="w-5/12 md:w-3/12 flex justify-between">
               <button
                 disabled={tas.status === "Completed" && activeBtn}
-                className={` text-white p-2 rounded-md transition duration-500 ease-in-out ${
+                className={`text-xs md:text-sm text-white p-2 rounded-md transition duration-500 ease-in-out ${
                   tas.status === "Completed" ? "bg-gray-2" : "bg-purple-4"
                 }`}
                 onClick={() => inProgressFunction(tas)}
@@ -382,7 +382,7 @@ setEvents(newEvents);
               
               </button>
               <button
-                className={`bg-green text-white p-2 rounded-md transition duration-500 ease-in-out ${
+                className={`text-xs md:text-base bg-green text-white p-2 rounded-md transition duration-500 ease-in-out ${
                   tas.status === "Completed" ? "bg-green" : ""
                 }`}
                 onClick={() => completeTaskFunction(tas)}

@@ -60,13 +60,15 @@ const LoginPage = () => {
   };
 
   const loginHandler = async () => {
-    setLoginText(true)
+    
     try {
+      setLoginText(true)
       let emailSession = await promise.createEmailSession(
         userDetails.email,
         userDetails.password
       );
       localStorage.setItem("userSession",emailSession.userId)
+
        navigate("/container/dashboard")
     } 
     catch (error) {
@@ -87,7 +89,7 @@ const LoginPage = () => {
     if (emailRegex.test(userDetails.email) && userDetails.password.length > 7) {
       setButtonClick(false)
     }
-     else if ( !emailRegex.test(userDetails.email) || userDetails.password.length < 8 ) {
+     else if ( userDetails.password.length <= 7 ) {
       setButtonClick(true);
     }
   };
