@@ -116,11 +116,19 @@ function DashboardHome() {
     }
   };
   useEffect(() => {
+    const priorityColors = {
+      Critical: '#c1121f',
+      High: '#e36414',
+      Medium: '#2ec4b6',
+      low: '#ffc71f',
+    };
+
     const newEvents = userTasks.map((doc) => ({
       start: doc.dueDate,
       end: doc.dueDate,
       title: doc.title,
       priority: doc.priority,
+      color: priorityColors[doc.priority] || "red"
     }));
     setEvents(newEvents);
   }, [userTasks]);
@@ -243,7 +251,7 @@ function DashboardHome() {
               <div className="py-4 ">{task.title}</div>
               <div className="py-4">
                 <p
-                  className={`w-4/12 text-center rounded-md ${
+                  className={`w-6/12 md:w-4/12 text-center rounded-md ${
                     task.priority === "Critical" ? "bg-red text-white" : ""
                   } ${task.priority === "low" ? "bg-yellow text-white" : ""} ${
                     task.priority === "High" ? "bg-orange text-white" : ""

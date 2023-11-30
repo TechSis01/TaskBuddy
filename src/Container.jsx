@@ -38,7 +38,7 @@ function Container() {
 
   return (
     <section className="lg:flex relative text-xs md:text-base">
-      <RxHamburgerMenu onClick={openAside} className="lg:hidden mt-5 ml-auto mr-5"/>
+      <RxHamburgerMenu onClick={openAside} className="text-lg lg:hidden mt-5 ml-auto mr-5"/>
       <AsideBar />
       <Outlet />
       <CalendarSection />

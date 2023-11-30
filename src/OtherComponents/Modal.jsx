@@ -212,7 +212,7 @@ notify("New hobby added")
         </div>
 
         <textarea
-          className="border-2 outline-none rounded-md ml-2 p-2 w-4/5 md:w-auto"
+          className="border-2 outline-none rounded-md md:ml-2 p-2 w-4/5 md:w-auto"
           rows="5"
           cols="60"
           placeholder="Bio..."
