@@ -1,38 +1,27 @@
 /* eslint-disable react/jsx-key */
-import React from "react";
 import ProfilePic from "./OtherComponents/ProfilePic";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "./App";
 import Button from "./Button";
 import { BsFillInfoCircleFill, BsFillHeartPulseFill } from "react-icons/bs";
-import { GrContactInfo } from "react-icons/gr";
 import { HiLightBulb } from "react-icons/hi";
 import { RiContactsBook2Fill } from "react-icons/ri";
 import Modal from "./OtherComponents/Modal";
-import { databases, promise } from "./services/appwriteConfig";
-import { Query } from "appwrite";
-import profilepic from "./Images/avatar.jfif";
+import { databases, promise,storage} from "./services/appwriteConfig";
 import { useNavigate } from "react-router-dom";
-import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from "uuid";
 import DeleteModal from "./OtherComponents/DeleteModal";
 import DeleteHobbyModal from "./OtherComponents/DeleteHobbyModal";
-import {RxHamburgerMenu} from "react-icons/rx"
-
+import loadBtn from "./Images/btnLoad.gif"
 function Profile() {
   let navigate = useNavigate();
   const {
     avatar,
     setAvatar,
-    currentUser,
     currentUserEmail,
-    newUserSignUp,
-    setNewUserSignUp,
     avatarID,
     setAvatarID,
-    newUserSignUpPic,
-    setNewUserSignUpPic,
-    isAsideBarOpen, setIsAsideBarOpen,
+    setIsAsideBarOpen,
   } = useContext(UserContext);
   const [noUserData, setUserData] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +30,7 @@ function Profile() {
   const [hobbies, setHobbies] = useState([]);
   const [docID, setDocID] = useState("");
   const [updateBtn, setUpdateBtn] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [userImage, setUserImage] = useState(null);
   const [modalBtn, setModalBtn] = useState("Save")
   const [displayPic, setDisplayPic] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
@@ -49,15 +38,15 @@ function Profile() {
   const [skillDeleted, setSkilldeleted] = useState("")
   const [hobbyDeleted, setHobbydeleted] = useState("")
   const [imageTooltip, setImageTooltip] = useState(false)
+  const [loading,setLoading] = useState(false)
   const editProfile = () => {
     setShowModal(true);
+    
   };
 
   const removeModal = () => {
     setShowModal(false);
-    
   };
-
   useEffect(() => {
     // Get the JSON string from localStorage
     const jsonString = localStorage.getItem("userProfile");
@@ -148,66 +137,56 @@ function Profile() {
     }
   };
 
-  const handleFileChange = async (e) => {
-    let url = URL.createObjectURL(e.target.files[0]);
-    setAvatar(url);
-   let pictureUniqueKey = uuidv4()
-    try {
+  // FUNCTION FOR PROFILE PICTURE
+  const handleSubmit = async(e)=>{
+    e.preventDefault();
+    setLoading(true)
+    const imageInput = document.getElementById("fileInput")
+    const image = imageInput.files[0]
+    let url = URL.createObjectURL(image);
+      setAvatar(url)
+    try{
       let user = await promise.get();
+     
+      if(!image){
+        console.log("please select an image file")
+        return
+      }
+      const imageId = uuidv4()
+      const newImage = await storage.createFile(
+        "649e592acbaca9a5e268",
+        imageId,
+        image
+      );
+
+      const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/649e592acbaca9a5e268/files/${imageId}/view?project=a1&mode=admin`;
+     if(displayPic){
+          await databases.updateDocument(
+            "647ca874cf8af94985ec",
+            "65058e1e9a1add9c9034",
+            avatarID,
+            {
+              url: imageUrl,
+            }
+          );
+     } 
+     else{
       await databases.createDocument(
         "647ca874cf8af94985ec",
         "65058e1e9a1add9c9034",
-       pictureUniqueKey,
+        imageId,
         {
-          url: url,
+          url: imageUrl,
           uid: user.$id,
         }
-      );
-      const profilePictureData = {
-        picURL : url,
-        uniqueKey:pictureUniqueKey
-
-       }
-      const jsonString = JSON.stringify(profilePictureData)
-        localStorage.setItem("userProfilePicture", jsonString)
-      console.log("added new dp")
-      // setNewUserSignUpPic(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const updateFileChange = async (e) => {
-    let url = URL.createObjectURL(e.target.files[0]);
-    setAvatar(url);
-    try {
-      let user = await promise.get();
-      await databases.updateDocument(
-        "647ca874cf8af94985ec",
-        "65058e1e9a1add9c9034",
-        avatarID,
-        {
-          url: url,
-        }
-      );
-       // Update the userSkillsArray in localStorage
-    const userPicture = JSON.parse(localStorage.getItem("userProfilePicture"));
-    userPicture.picURL = url
-    // Update the array in localStorage
-    localStorage.setItem("userProfilePicture", JSON.stringify(userPicture));
-      console.log("updated dp")
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const triggerFileInput = () => {
-    document.getElementById("fileInput").click();
-    setImageTooltip(true)
-  };
-
-  const openAside = ()=>{
-    setIsAsideBarOpen(!isAsideBarOpen)
+      );  
+     }
+     setLoading(false)
+    }catch(error){
+      console.log(error.message)
+    } 
   }
+  
   return (
     <section className="lg:w-8/12 px-4">
       <div className="flex justify-between items-center">
@@ -218,24 +197,31 @@ function Profile() {
           style="border-2 border-gray-2 border-dashed p-2 rounded-md mt-4 hover:bg-gray-1"
         />
       </div>
-      <div className="flex items-center">
-
+      <div className="">
         <ProfilePic
           image={avatar}
           altText="Profile pic"
-          style="w-4/12 my-4 rounded-full cursor-pointer object-cover transition-transform transform bg-gray-300 group-hover:scale-80 group-hover:opacity-50"
-          clickImage={triggerFileInput}
+          style="w-1/5 my-4 rounded-full object-cover transition-transform transform bg-gray-300 group-hover:scale-80 group-hover:opacity-50"
+          // clickImage={(e)=>uploadImage(e)}
           tooltip = {imageTooltip}
         />
         <input
           type="file"
           id="fileInput"
           accept=".jpg,.jpeg,.png"
-          onChange={displayPic ? updateFileChange: handleFileChange}
-          className="hidden"
+          onChange={(e)=>{
+            setUserImage(e.target.files[0])
+          }}
+          className="my-2"
         ></input>
       </div>
-      <div className="pb-16 pl-4 mb-2 pt-2 border rounded-md shadow-md">
+      <div className="flex">
+      <button onClick={handleSubmit}  disabled={!userImage}  className="{`mb-2 py-2 hover:bg-purple-400 bg-purple-3
+              } text-white w-1/4 rounded-md flex justify-center items-center hover:bg-purple-4`}">{displayPic ? "Update display Image" : "Upload display Image"}</button>
+      {loading ? <img src={loadBtn} alt="spinner"></img>: null}
+      </div>
+     
+      <div className="pb-16 pl-4 mb-2 mt-2 pt-2 border rounded-md shadow-md">
         <div className="flex items-center">
           <p className="text-purple-4 fill-current mr-2">
             <BsFillInfoCircleFill />
@@ -263,7 +249,6 @@ function Profile() {
             {skills.map((skill,index) => (
               <div
                 className="mx-2 mt-2 p-2 border rounded-md shadow-md italic cursor-pointer"
-                // onClick={() => deleteSkill(skill)}
                 onClick={ ()=>verifyDeleteSkill(skill)}
                 key={index}
               >

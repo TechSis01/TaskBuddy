@@ -1,7 +1,7 @@
 import { UserContext } from "../App";
 import { useContext, useState, useEffect } from "react";
-import { promise, storage } from "../services/appwriteConfig";
-import { Link, useFetcher, useLoaderData, useNavigate } from "react-router-dom";
+import { promise } from "../services/appwriteConfig";
+import { Link } from "react-router-dom";
 import Preloader from "../OtherComponents/Preloader";
 import { BsCheckLg } from "react-icons/bs";
 import { CiTimer } from "react-icons/ci";
@@ -11,13 +11,8 @@ import Button from "../Button";
 import { databases } from "../services/appwriteConfig";
 import { Query } from "appwrite";
 import Box from "../OtherComponents/Box";
-import { format } from "date-fns";
-import profilepic from "../Images/avatar.jfif";
-import { client } from "../services/appwriteConfig";
 import moment from "moment";
 import addTaskImage from "../Images/AddTask.gif"
-import CalendarSection from "../CalendarSection";
-import {RxHamburgerMenu} from "react-icons/rx"
 function DashboardHome() {
   const {
     userTasks,
@@ -26,25 +21,11 @@ function DashboardHome() {
     setCurrentUser,
     isLoading,
     setIsLoading,
-    isAsideBarOpen, setIsAsideBarOpen,
-    events,
+    setIsAsideBarOpen,
     setEvents,
-    currentUserEmail,
     setCurrentUserEmail,
-    fileID,
-    setFileID,
-    userId,
-    setUserId,
-    avatar,
     setAvatar,
-    newUser,
-    setNewUser,
-    avatarID,
     setAvatarID,
-    newUserSignUpPic,
-    setNewUserSignUpPic,
-    newUserSignUp,
-        setNewUserSignUp,
   } = useContext(UserContext);
 
   const [totalTasks, setTotalTasks] = useState(0);
@@ -231,7 +212,7 @@ function DashboardHome() {
         <Link to="/container/newTask">
           <Button
             btnText="Add new Task"
-            style="pr-11 py-2 text-white w-full rounded-md flex justify-center items-center bg-purple-4"
+            style="pr-11 py-2 text-white w-full rounded-md flex justify-center items-center bg-purple-4 hover:bg-purple-5"
           />
         </Link>
         <section className="py-8">

@@ -1,34 +1,22 @@
 import { createPortal } from "react-dom";
-import FormField from "../Authentication/FormField";
 import TopHeader from "../Authentication/TopHeader";
 import Button from "../Button";
-import { GiCancel } from "react-icons/gi";
 import { AiOutlinePlus } from "react-icons/ai";
-import { storage, promise, databases } from "../services/appwriteConfig";
+import {  promise, databases } from "../services/appwriteConfig";
 import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../App";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
-import userPic from "../Images/avatar.jfif";
 import { ToastContainer, toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 function Modal({
-  modalState,
   modalStateFunc,
   hobbies,
   skills,
   setSkills,
   setHobbies,
-  newUserProfile,
-  updateBtn,
-  setUpdateBtn,
   userBio,
-  setUserData,
-  noUserData,
   documentID,
   setUserBio,
   modalBtn,
-  setModalBtn
 }) {
   const [bio, setBio] = useState("");
   const [skill, setSkill] = useState("");
@@ -53,11 +41,8 @@ function Modal({
   };
   const handleSkillChange = (e) => {
       setSkill(e.target.value);
-    
   }
-
   const handleHobbyChange = (e) => {
-    
     setHobby(e.target.value);
   };
 
@@ -170,10 +155,9 @@ const updateSkills = async () => {
 };
 
   const updateHobbies = async () => {
-   
     if (!hobby) {
       notify("Please add a hobby")
-      return; // Don't proceed if the hobby is empty
+      return; // 
     }
     else if(hobby && hobby.trim()){
       setHobby("");
@@ -212,7 +196,7 @@ notify("New hobby added")
         </div>
 
         <textarea
-          className="border-2 outline-none rounded-md md:ml-2 p-2 w-4/5 md:w-auto"
+          className="border-2 outline-none rounded-md  p-2 w-4/5 md:w-auto"
           rows="5"
           cols="60"
           placeholder="Bio..."
@@ -240,11 +224,13 @@ notify("New hobby added")
             </button>
           </div>
         </div>
-        <Button
-          btnFunc={modalBtn === "Save" ? editUserProfile : updateUserProfileBio}
-          btnText={modalBtn}
-          style="ml-2 bg-green text-white px-7 py-2 rounded-md"
-        />
+        <button
+  className={`ml-2 ${bio ? 'bg-green' : 'bg-gray-400'} text-white px-7 py-2 rounded-md`}
+  disabled={!bio}
+  onClick={modalBtn === 'Save' ? editUserProfile : updateUserProfileBio}
+>
+  {modalBtn}
+</button>
       </div>
     </section>,
     document.getElementById("modal")
