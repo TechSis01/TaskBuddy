@@ -12,14 +12,15 @@ function CalendarSection() {
   const { events, setEvents, avatar, setAvatar, currentUser,fileID,setFileID,userDetails, setUserDetails } =
     useContext(UserContext);
   const logOutHandler = async () => {
+    setUserDetails({
+      name: '',
+      email: '',
+      password: '',
+    });
     try {
       await promise.deleteSession("current");
       localStorage.clear();
-      setUserDetails({
-        name: '',
-        email: '',
-        password: '',
-      });
+    
       setEvents([]);
       setFileID("")
       setAvatar(profilePic)
@@ -32,7 +33,7 @@ function CalendarSection() {
   return (
     <section className="lg:w-4/12 border-gray-2 border-l-2 sticky overflow-hidden top-0 h-screen px-5 py-4 lg:py-0">
       <div className="flex items-center justify-between">
-        <div className="flex items-center rounded-full hidden md:flex">
+        <div className="items-center rounded-full hidden md:flex">
           <ProfilePic image={avatar} altText="profile picture" style="w-9 m-2 rounded-full"/>
           <p className="text-sm">{currentUser}</p>
         </div>

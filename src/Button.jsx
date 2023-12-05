@@ -4,7 +4,7 @@ function Button({btnText,style,btnFunc,btnclick, enableSpiner}) {
   return (
     <button disabled={btnclick} className={style} onClick={btnFunc}>
       {enableSpiner ? (
-        <img src={loadBtn} alt="spinner" />
+        <em>loading...</em>
       ) : (
         <p>{btnText}</p>
       )}
