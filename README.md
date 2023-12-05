@@ -21,3 +21,5 @@ TaskBuddy, as the name suggests, is your best friend and companion in keeping tr
 8. Celebrate task completion: TaskBuddy acknowledges your accomplishments by providing accolades or acknowledgments upon the successful completion of each task, adding a touch of satisfaction and motivation to your productivity journey.
 
 Currently, I was only able to implement features 1-5. I had to pause building this project several times because I was dealing with my final year in university, getting back to implement the features was a struggle, I hope to do that in the future. 
+
+Enjoy https://taskbuddy-mu.vercel.app/
