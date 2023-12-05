@@ -157,16 +157,16 @@ const LoginPage = () => {
         >
           Forgot Password
         </Link>
-
-        <Button
-            btnclick={buttonClick}
-            btnFunc={loginHandler}
-            btnText= "Login"
-            enableSpiner={loginText}
-            style={`md:pr-11 py-2 my-5 ${
+        <button disabled={userDetails.email && userDetails.password ? false : true} onClick={loginHandler} className={`md:pr-11 py-2 my-5 ${
               buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
-            } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
-          ></Button>
+            } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}>
+            {loginText ? (
+              <em>loading...</em>
+            ) : (
+              <p>Login</p>
+            )}
+        </button>
+       
         <div className="mt-8 flex items-center text-purple-4 font-semibold hover:text-purple-5">
           <IoIosArrowBack />
           <Link to="/">Create an Account</Link>

@@ -223,7 +223,18 @@ function SignUpForm() {
         ) : (
           ""
         )}
-        <Button
+
+<button disabled={userDetails.name && userDetails.email && userDetails.password ? false : true} onClick={signup} className={`md:pr-11 py-2 my-5 ${
+            buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
+          } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}>
+            {signUpText ? (
+              <em>loading...</em>
+            ) : (
+              <p>Create an Account</p>
+            )}
+        </button>
+
+        {/* <Button
           btnclick={buttonClick}
           btnFunc={signup}
           btnText="Create an Account"
@@ -231,7 +242,7 @@ function SignUpForm() {
           style={`md:pr-11 py-2 my-5 ${
             buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
           } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
-        ></Button>
+        ></Button> */}
         <p>
           Already have an account?{" "}
           <span>
