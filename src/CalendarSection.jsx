@@ -9,12 +9,17 @@ import ProfilePic from "./OtherComponents/ProfilePic";
 import profilePic from "../src/Images/avatar.jfif"
 function CalendarSection() {
   const navigate = useNavigate();
-  const { events, setEvents, avatar, setAvatar, currentUser,fileID,setFileID } =
+  const { events, setEvents, avatar, setAvatar, currentUser,fileID,setFileID,userDetails, setUserDetails } =
     useContext(UserContext);
   const logOutHandler = async () => {
     try {
       await promise.deleteSession("current");
       localStorage.clear();
+      setUserDetails({
+        name: '',
+        email: '',
+        password: '',
+      });
       setEvents([]);
       setFileID("")
       setAvatar(profilePic)

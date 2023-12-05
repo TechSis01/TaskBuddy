@@ -75,8 +75,10 @@ const LoginPage = () => {
       if(error.code === 401){
         setIsUserInvalid(true)
         notifyInvalidUser()
+        setLoginText(false)
       }
       else{
+        setLoginText(false)
         return error;
       }
       console.log(error.message)
@@ -98,7 +100,6 @@ const LoginPage = () => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
     localStorage.clear()
     activateButton();
-    
   }, [userDetails.email, userDetails.password]);
 
   // Function to change password visibility
@@ -158,7 +159,8 @@ const LoginPage = () => {
         <Button
             btnclick={buttonClick}
             btnFunc={loginHandler}
-            btnText= {loginText ? <img src={btnLoad} alt="loading"></img> : "Login"}
+            btnText= "Login"
+            enableSpiner={loginText}
             style={`md:pr-11 py-2 my-5 ${
               buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
             } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}

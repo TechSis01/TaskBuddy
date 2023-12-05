@@ -132,6 +132,7 @@ function SignUpForm() {
         navigate("/container/dashboard")
       },1000)
     } catch (error) {
+      setSignUpText(false)
       console.log(error)
     }
   };
@@ -224,8 +225,8 @@ function SignUpForm() {
         <Button
           btnclick={buttonClick}
           btnFunc={signup}
-          btnText={signUpText ? <img src={loadButton} alt="spinner"></img> : "Create an Account"}
-          
+          btnText="Create an Account"
+          enableSpiner={signUpText}
           style={`md:pr-11 py-2 my-5 ${
             buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
           } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}
