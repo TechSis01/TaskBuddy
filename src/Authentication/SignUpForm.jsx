@@ -19,21 +19,7 @@ function SignUpForm() {
   const {
     userDetails,
     setUserDetails,
-    currentUser,
-    setCurrentUser,
-    setLoader,
-    isLoading,
-    setIsLoading,
-    signUpLoader,
-    setSignUpLoader,
-    userId,
-    setUserId,
-    newUser,
     setNewUser,
-    newUserSignUp,
-    setNewUserSignUp,
-    newUserSignUpPic,
-    setNewUserSignUpPic,
   } = useContext(UserContext);
 
   // State to handle button Clickability
@@ -130,7 +116,7 @@ function SignUpForm() {
 
   // FUNCTION TO CREATE A NEW USER
   const signup = async () => {
-   
+    setSignUpText(true)
     try {
       const newUser = await promise.create(
         uuidv4(),
@@ -140,7 +126,7 @@ function SignUpForm() {
       );
       // Once the user clicks on create an account, account is created and a new session is created
       // for the user, then the verification to email is fired off
-      setSignUpText(true)
+      
       await verifyUser();
       setTimeout(()=>{
         navigate("/container/dashboard")
@@ -239,7 +225,7 @@ function SignUpForm() {
           btnclick={buttonClick}
           btnFunc={signup}
           btnText={signUpText ? <img src={loadButton} alt="spinner"></img> : "Create an Account"}
-          // btnText={signUpText ? "loading...": "Create an Account"}
+          
           style={`md:pr-11 py-2 my-5 ${
             buttonClick ? "bg-purple-400 hover:bg-purple-400" : "bg-purple-3"
           } text-white w-7/12 rounded-md flex justify-center items-center hover:bg-purple-4`}

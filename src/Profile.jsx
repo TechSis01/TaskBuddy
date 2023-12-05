@@ -216,7 +216,7 @@ function Profile() {
         ></input>
       </div>
       <div className="flex">
-      <button onClick={handleSubmit}  disabled={!userImage}  className="{`mb-2 py-2 hover:bg-purple-400 bg-purple-3
+      <button onClick={handleSubmit}  disabled={!userImage}  className="{`mb-2 py-2 px-2 hover:bg-purple-400 bg-purple-3
               } text-white rounded-md flex justify-center items-center hover:bg-purple-4`}">{displayPic ? "Update display Image" : "Upload display Image"}</button>
       {/* {loading ? <img src={loadBtn} alt="spinner"></img>: null} */}
       </div>
