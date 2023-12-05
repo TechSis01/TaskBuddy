@@ -110,6 +110,7 @@ function SignUpForm() {
   useEffect(() => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
     localStorage.clear();
+    setButtonClick(true)
     setNewUser(true);
     activateButton();
   }, [userDetails.name, userDetails.email, userDetails.password]);

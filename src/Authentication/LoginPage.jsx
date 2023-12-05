@@ -99,6 +99,7 @@ const LoginPage = () => {
   useEffect(() => {
     // LOCALSTORAGE WILL BE CLEARED, AND REMOVE THE USERSESSION THERE, SO THAT WE ARE NOT STUCK ON THE SAME STATE
     localStorage.clear()
+    setButtonClick(true)
     activateButton();
   }, [userDetails.email, userDetails.password]);
 
