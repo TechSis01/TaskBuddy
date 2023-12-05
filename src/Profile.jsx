@@ -38,7 +38,7 @@ function Profile() {
   const [skillDeleted, setSkilldeleted] = useState("")
   const [hobbyDeleted, setHobbydeleted] = useState("")
   const [imageTooltip, setImageTooltip] = useState(false)
-  const [loading,setLoading] = useState(false)
+  // const [loading,setLoading] = useState(false)
   const editProfile = () => {
     setShowModal(true);
     
@@ -140,7 +140,7 @@ function Profile() {
   // FUNCTION FOR PROFILE PICTURE
   const handleSubmit = async(e)=>{
     e.preventDefault();
-    setLoading(true)
+  
     const imageInput = document.getElementById("fileInput")
     const image = imageInput.files[0]
     let url = URL.createObjectURL(image);
@@ -181,7 +181,7 @@ function Profile() {
         }
       );  
      }
-     setLoading(false)
+  
     }catch(error){
       console.log(error.message)
     } 
@@ -217,8 +217,8 @@ function Profile() {
       </div>
       <div className="flex">
       <button onClick={handleSubmit}  disabled={!userImage}  className="{`mb-2 py-2 hover:bg-purple-400 bg-purple-3
-              } text-white w-1/4 rounded-md flex justify-center items-center hover:bg-purple-4`}">{displayPic ? "Update display Image" : "Upload display Image"}</button>
-      {loading ? <img src={loadBtn} alt="spinner"></img>: null}
+              } text-white rounded-md flex justify-center items-center hover:bg-purple-4`}">{displayPic ? "Update display Image" : "Upload display Image"}</button>
+      {/* {loading ? <img src={loadBtn} alt="spinner"></img>: null} */}
       </div>
      
       <div className="pb-16 pl-4 mb-2 mt-2 pt-2 border rounded-md shadow-md">
