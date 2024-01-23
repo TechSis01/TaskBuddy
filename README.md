@@ -1,5 +1,5 @@
 # TaskBuddy
-##Introduction
+## Introduction
 I reached a point where I was unsure about the Personal Project I wanted to build. Like every other day, I surfed the web and I came on Hashnode to publish an article from my drafts, the first thing that caught my attention was the Appwrite Hackathon post. Instantly, my interest was piqued, and I eagerly sought out more information. After thoroughly reviewing the guidelines and the list of sample Applications that could be developed, I decided to build a Task Management Application.
 I face significant challenges with time management, task allocation, and task completion. Despite attempting to create to-do lists on my Notes, it proves ineffective as I struggle to keep track of my tasks, resulting in a chaotic situation. I was in dire need of a user-friendly application that could assist me in seamlessly managing and monitoring my tasks at every stage.
 
